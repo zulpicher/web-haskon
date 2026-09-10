@@ -11,9 +11,9 @@ class TransactionController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Auth::user()
-            ->transactions()
-            ->latest('transaction_date');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $query = $user->transactions()->latest('transaction_date');
 
         if ($request->filled('type')) {
             $query->where('type', $request->type);
@@ -57,9 +57,9 @@ class TransactionController extends Controller
 
     public function store(TransactionRequest $request)
     {
-        Auth::user()->transactions()->create(
-            $request->validated()
-        );
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->transactions()->create($request->validated());
 
         return redirect()
             ->route('transactions.index')
