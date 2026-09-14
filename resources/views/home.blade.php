@@ -1,3 +1,4 @@
+{{-- resources\views\home.blade.php --}}
 <x-app-layout>
 
     <x-slot name="header">

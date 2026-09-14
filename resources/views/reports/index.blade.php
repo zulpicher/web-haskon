@@ -1,3 +1,4 @@
+{{-- resources\views\reports\index.blade.php --}}
 <x-app-layout>
 
     <x-slot name="header">
@@ -148,6 +149,40 @@
                     >
                         Tampilkan Laporan
                     </button>
+
+                    <div class="mt-6 flex flex-wrap items-center gap-3">
+                        {{-- Kembali ke Buku Kas --}}
+                        <a
+                            href="{{ route('buku-kas.dashboard') }}"
+                            class="inline-flex items-center justify-center
+                                px-4 py-2.5
+                                bg-gray-700 hover:bg-gray-800
+                                dark:bg-gray-600 dark:hover:bg-gray-500
+                                text-white font-semibold text-sm
+                                rounded-lg
+                                focus:outline-none
+                                focus:ring-2 focus:ring-gray-500
+                                focus:ring-offset-2
+                                transition"
+                        >
+                            <svg
+                                class="w-4 h-4 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                                />
+                            </svg>
+
+                            Kembali ke Buku Kas
+                        </a>
+                    </div>
+
 
                 </form>
 
@@ -321,6 +356,35 @@
                             px-4 py-2 rounded-lg transition"
                     >
                         Export PDF
+                    </a>
+                    {{-- Export Excel --}}
+                    <a
+                        href="{{ route('buku-kas.reports.excel', request()->query()) }}"
+                        class="inline-flex items-center justify-center
+                            px-4 py-2.5
+                            bg-green-600 hover:bg-green-700
+                            text-white font-semibold text-sm
+                            rounded-lg
+                            focus:outline-none
+                            focus:ring-2 focus:ring-green-500
+                            focus:ring-offset-2
+                            transition"
+                    >
+                        <svg
+                            class="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 4h16v16H4z M8 8l3 3m0 0l3-3m-3 3v6"
+                            />
+                        </svg>
+
+                        Export Excel
                     </a>
                 </div>
 

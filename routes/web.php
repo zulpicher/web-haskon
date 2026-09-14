@@ -32,6 +32,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->name('reports.generate');
             Route::get('/reports/pdf', [ReportController::class, 'pdf'])
                 ->name('reports.pdf');
+            Route::get('/reports/excel', [ReportController::class, 'excel'])
+                ->name('reports.excel');
 
 
         });
