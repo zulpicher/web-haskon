@@ -3,6 +3,7 @@
 use App\Http\Controllers\BukuKasController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->name('dashboard');
             Route::resource('transactions', TransactionController::class)
                 ->only(['store', 'update', 'destroy']);
+            Route::get('/reports', [ReportController::class, 'index'])
+                ->name('reports.index');
+            Route::get('/reports/generate', [ReportController::class, 'generate'])
+                ->name('reports.generate');
+            Route::get('/reports/pdf', [ReportController::class, 'pdf'])
+                ->name('reports.pdf');
+
+
         });
 
     /*Profile*/
