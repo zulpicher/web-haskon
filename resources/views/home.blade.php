@@ -1,141 +1,219 @@
-{{-- resources\views\home.blade.php --}}
 <x-app-layout>
 
+    {{-- ========================================================= --}}
+    {{-- HEADER --}}
+    {{-- ========================================================= --}}
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Beranda
-        </h2>
+        <div>
+
+            <h1 class="mt-1 text-2xl font-bold text-haskon-accent">
+                Beranda
+            </h1>
+            <p class="text-sm font-medium text-haskon-primary">
+                  Selamat datang kembali, {{ Auth::user()->name }}
+            </p>
+
+        </div>
     </x-slot>
 
-    <div class="py-6">
+
+    {{-- ========================================================= --}}
+    {{-- CONTENT --}}
+    {{-- ========================================================= --}}
+    <div class="py-8">
+
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            {{-- MODUL --}}
-            <div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                    {{-- BUKU KAS --}}
-                    <a
-                        href="{{ route('buku-kas.dashboard') }}"
-                        class="block bg-white dark:bg-gray-800 shadow rounded-xl p-6
-                               hover:shadow-lg transition"
-                    >
-
-                        <div class="flex items-center justify-between mb-4">
-
-                            <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
-                                Buku Kas
-                            </h4>
-
-                            <span class="text-sm text-gray-500 dark:text-gray-400">
-                                Buka →
-                            </span>
-
-                        </div>
-
-                        <div class="mb-4">
-
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                Saldo Saat Ini
-                            </p>
-
-                            <p class="text-2xl font-bold mt-1
-                                {{ $bukuKasSummary['balance'] < 0
-                                    ? 'text-red-600'
-                                    : 'text-gray-900 dark:text-white' }}">
-
-                                Rp{{ number_format(
-                                    $bukuKasSummary['balance'],
-                                    0,
-                                    ',',
-                                    '.'
-                                ) }}
-
-                            </p>
-
-                        </div>
+            {{-- ================================================= --}}
+            {{-- MODULES --}}
+            {{-- ================================================= --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
 
-                        <div class="grid grid-cols-2 gap-4">
+                {{-- ================================================= --}}
+                {{-- BUKU KAS --}}
+                {{-- ================================================= --}}
+                <a
+                    href="{{ route('buku-kas.dashboard') }}"
+                    class="group block haskon-card overflow-hidden transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                >
+
+                    <div class="p-6">
+                        {{-- Title --}}
+                        <div class="flex items-start justify-between gap-4">
 
                             <div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">
-                                    Pemasukan Bulan Ini
-                                </p>
+                                <h3 class="text-lg font-bold text-haskon-primary">
+                                    Buku Kas
+                                </h3>
 
-                                <p class="text-sm font-semibold text-green-600 mt-1">
-                                    Rp{{ number_format(
-                                        $bukuKasSummary['income'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) }}
+                                <p class="mt-1 text-sm text-haskon-muted">
+                                    Kelola pemasukan, pengeluaran, dan kondisi kas.
                                 </p>
                             </div>
 
-
-                            <div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">
-                                    Pengeluaran Bulan Ini
-                                </p>
-
-                                <p class="text-sm font-semibold text-red-600 mt-1">
-                                    Rp{{ number_format(
-                                        $bukuKasSummary['expense'],
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) }}
-                                </p>
-                            </div>
+                            <svg
+                                class="w-5 h-5 flex-shrink-0 text-haskon-muted group-hover:text-haskon-accent group-hover:translate-x-1 transition"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M9 5l7 7-7 7"
+                                />
+                            </svg>
 
                         </div>
 
-                    </a>
 
+                        {{-- Summary --}}
+                        <div class="mt-6 pt-5 border-t border-haskon-border">
 
-                    {{-- MANAJEMEN TASK --}}
-                    <div
-                        class="bg-gray-100 dark:bg-gray-700
-                               shadow-inner rounded-xl p-6
-                               flex flex-col justify-center
-                               text-gray-400 dark:text-gray-500"
-                    >
+                            <p class="text-xs font-medium uppercase tracking-wide text-haskon-muted">
+                                Saldo saat ini
+                            </p>
 
-                        <h4 class="text-lg font-semibold">
-                            next fitur
-                        </h4>
+                            <p class="mt-1 text-2xl font-bold text-haskon-primary">
+                                Rp {{ number_format($bukuKasSummary['balance'], 0, ',', '.') }}
+                            </p>
 
-                        <p class="text-sm mt-2">
-                            tes 1234567890
-                        </p>
+                            <div class="mt-4 flex items-center gap-4 text-xs">
+
+                                <span class="text-haskon-success">
+                                    Masuk:
+                                    <strong>
+                                        Rp {{ number_format($bukuKasSummary['income'], 0, ',', '.') }}
+                                    </strong>
+                                </span>
+
+                                <span class="text-haskon-danger">
+                                    Keluar:
+                                    <strong>
+                                        Rp {{ number_format($bukuKasSummary['expense'], 0, ',', '.') }}
+                                    </strong>
+                                </span>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
+                </a>
 
-                    {{-- ABSENSI --}}
-                    <div
-                        class="bg-gray-100 dark:bg-gray-700
-                               shadow-inner rounded-xl p-6
-                               flex flex-col justify-center
-                               text-gray-400 dark:text-gray-500"
-                    >
 
-                        <h4 class="text-lg font-semibold">
-                            next fitur
-                        </h4>
+                {{-- ================================================= --}}
+                {{-- TASK MANAGEMENT --}}
+                {{-- ================================================= --}}
+                <div class="haskon-card overflow-hidden">
 
-                        <p class="text-sm mt-2">
-                            tes0987654321
+                    <div class="p-6">
+
+                        <h3 class="text-lg font-bold text-haskon-primary">
+                            Task Management
+                        </h3>
+
+                        <p class="mt-1 text-sm text-haskon-muted">
+                            Kelola pekerjaan, tugas, dan aktivitas tim.
                         </p>
+
+                        <div class="mt-6 pt-5 border-t border-haskon-border">
+                            <span
+                                class="
+                                    inline-flex items-center
+                                    px-2.5 py-1
+                                    rounded-full
+                                    text-xs font-semibold
+                                    bg-haskon-surface
+                                    text-haskon-muted
+                                "
+                            >
+                                Segera hadir
+                            </span>
+                        </div>
 
                     </div>
 
                 </div>
 
+
+                {{-- ================================================= --}}
+                {{-- ABSENSI --}}
+                {{-- ================================================= --}}
+                <div class="haskon-card overflow-hidden">
+
+                    <div class="p-6">
+
+                        <h3 class="text-lg font-bold text-haskon-primary">
+                            Absensi
+                        </h3>
+
+                        <p class="mt-1 text-sm text-haskon-muted">
+                            Kelola kehadiran dan aktivitas karyawan.
+                        </p>
+
+                        <div class="mt-6 pt-5 border-t border-haskon-border">
+                            <span
+                                class="
+                                    inline-flex items-center
+                                    px-2.5 py-1
+                                    rounded-full
+                                    text-xs font-semibold
+                                    bg-haskon-surface
+                                    text-haskon-muted
+                                "
+                            >
+                                Segera hadir
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- ================================================= --}}
+                {{-- INVENTORY --}}
+                {{-- ================================================= --}}
+                <div class="haskon-card overflow-hidden">
+
+                    <div class="p-6">
+
+                        <h3 class="text-lg font-bold text-haskon-primary">
+                            Inventory
+                        </h3>
+
+                        <p class="mt-1 text-sm text-haskon-muted">
+                            Kelola stok, aset, dan inventaris perusahaan.
+                        </p>
+
+                        <div class="mt-6 pt-5 border-t border-haskon-border">
+                            <span
+                                class="
+                                    inline-flex items-center
+                                    px-2.5 py-1
+                                    rounded-full
+                                    text-xs font-semibold
+                                    bg-haskon-surface
+                                    text-haskon-muted
+                                "
+                            >
+                                Segera hadir
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
             </div>
 
         </div>
+
     </div>
 
 </x-app-layout>

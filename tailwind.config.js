@@ -14,6 +14,27 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+
+            colors: {
+                haskon: {
+                    background: '#ffffff',
+                    surface: '#f8f9fa',
+                    dark: '#212529',
+
+                    primary: '#212529',
+                    accent: '#c9a84c',
+                    'accent-soft': '#fff3dc',
+
+                    text: '#212529',
+                    muted: '#6c757d',
+                    inverted: '#ffffff',
+
+                    border: '#e9ecef',
+
+                    success: '#2b8a3e',
+                    danger: '#c92a2a',
+                },
+            },
         },
     },
 

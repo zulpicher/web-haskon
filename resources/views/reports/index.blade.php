@@ -1,75 +1,209 @@
-{{-- resources\views\reports\index.blade.php --}}
-<x-app-layout>
+{{-- ========================================================= --}}
+{{-- HALAMAN LAPORAN BUKU KAS --}}
+{{-- ========================================================= --}}
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+<x-app-layout>
+{{-- ========================================================= --}}
+{{-- HEADER --}}
+{{-- ========================================================= --}}
+
+<x-slot name="header">
+
+    <div>
+        <h2 class="text-xl font-semibold leading-tight text-haskon-primary">
             Laporan Buku Kas
         </h2>
-    </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        <p class="mt-1 text-sm text-haskon-muted">
+            Buat dan lihat laporan aktivitas keuangan berdasarkan periode.
+        </p>
+    </div>
 
-            {{-- Form laporan --}}
-            <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+</x-slot>
 
-                <form
-                    method="GET"
-                    action="{{ route('buku-kas.reports.generate') }}"
-                    class="space-y-6"
-                    x-data="{
-                        reportType: '{{ request('report_type', 'monthly') }}'
-                    }"
-                >
 
-                    {{-- Jenis laporan --}}
+{{-- ========================================================= --}}
+{{-- CONTENT --}}
+{{-- ========================================================= --}}
+
+<div class="py-6">
+
+    <div class="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
+
+
+        {{-- ================================================= --}}
+        {{-- FORM LAPORAN --}}
+        {{-- ================================================= --}}
+
+        <div class="haskon-card overflow-hidden">
+
+            {{-- Header Form --}}
+            <div
+                class="
+                    border-b
+                    border-haskon-border
+                    px-6
+                    py-5
+                "
+            >
+                <h3 class="text-lg font-semibold text-haskon-primary">
+                    Parameter Laporan
+                </h3>
+
+                <p class="mt-1 text-sm text-haskon-muted">
+                    Tentukan jenis dan periode laporan yang ingin ditampilkan.
+                </p>
+            </div>
+
+
+            {{-- Form --}}
+            <form
+                method="GET"
+                action="{{ route('buku-kas.reports.generate') }}"
+                class="p-6"
+                x-data="{
+                    reportType: '{{ request('report_type', 'monthly') }}'
+                }"
+            >
+
+                <div class="space-y-6">
+
+
+                    {{-- ================================================= --}}
+                    {{-- JENIS LAPORAN --}}
+                    {{-- ================================================= --}}
+
                     <div>
-                        <label class="block font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">
+
+                        <label
+                            class="
+                                mb-3
+                                block
+                                text-sm
+                                font-medium
+                                text-haskon-text
+                            "
+                        >
                             Jenis Laporan
                         </label>
 
-                        <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
 
-                            <label class="inline-flex items-center cursor-pointer">
+                        <div
+                            class="
+                                flex
+                                flex-col
+                                gap-3
+                                sm:flex-row
+                                sm:gap-6
+                            "
+                        >
+
+                            {{-- Bulanan --}}
+                            <label
+                                class="
+                                    inline-flex
+                                    cursor-pointer
+                                    items-center
+                                    rounded-lg
+                                    border
+                                    border-haskon-border
+                                    px-4
+                                    py-3
+                                    transition
+                                    hover:bg-haskon-surface
+                                "
+                            >
+
                                 <input
                                     type="radio"
                                     name="report_type"
                                     value="monthly"
                                     x-model="reportType"
-                                    class="text-blue-600 focus:ring-blue-500"
+                                    class="
+                                        border-haskon-border
+                                        text-haskon-primary
+                                        focus:ring-haskon-accent
+                                    "
                                 >
 
-                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                <span
+                                    class="
+                                        ml-3
+                                        text-sm
+                                        font-medium
+                                        text-haskon-text
+                                    "
+                                >
                                     Laporan Bulanan
                                 </span>
+
                             </label>
 
-                            <label class="inline-flex items-center cursor-pointer">
+
+                            {{-- Custom --}}
+                            <label
+                                class="
+                                    inline-flex
+                                    cursor-pointer
+                                    items-center
+                                    rounded-lg
+                                    border
+                                    border-haskon-border
+                                    px-4
+                                    py-3
+                                    transition
+                                    hover:bg-haskon-surface
+                                "
+                            >
+
                                 <input
                                     type="radio"
                                     name="report_type"
                                     value="custom"
                                     x-model="reportType"
-                                    class="text-blue-600 focus:ring-blue-500"
+                                    class="
+                                        border-haskon-border
+                                        text-haskon-primary
+                                        focus:ring-haskon-accent
+                                    "
                                 >
 
-                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                <span
+                                    class="
+                                        ml-3
+                                        text-sm
+                                        font-medium
+                                        text-haskon-text
+                                    "
+                                >
                                     Periode Custom
                                 </span>
+
                             </label>
 
                         </div>
+
                     </div>
 
 
-                    {{-- Laporan Bulanan --}}
+                    {{-- ================================================= --}}
+                    {{-- LAPORAN BULANAN --}}
+                    {{-- ================================================= --}}
+
                     <div
                         x-show="reportType === 'monthly'"
                         x-transition
                     >
+
                         <label
                             for="month"
-                            class="block font-medium text-sm text-gray-700 dark:text-gray-300 mb-2"
+                            class="
+                                mb-1.5
+                                block
+                                text-sm
+                                font-medium
+                                text-haskon-text
+                            "
                         >
                             Bulan
                         </label>
@@ -80,25 +214,49 @@
                             name="month"
                             value="{{ request('month', now()->format('Y-m')) }}"
                             :disabled="reportType !== 'monthly'"
-                            class="border-gray-300 dark:border-gray-700
-                                dark:bg-gray-900 dark:text-gray-300
-                                rounded-md shadow-sm
-                                focus:border-blue-500 focus:ring-blue-500"
+                            class="
+                                w-full
+                                rounded-lg
+                                border-haskon-border
+                                bg-white
+                                text-haskon-text
+                                shadow-sm
+                                focus:border-haskon-accent
+                                focus:ring-haskon-accent
+                                sm:max-w-sm
+                            "
                         >
+
                     </div>
 
 
-                    {{-- Periode Custom --}}
+                    {{-- ================================================= --}}
+                    {{-- PERIODE CUSTOM --}}
+                    {{-- ================================================= --}}
+
                     <div
                         x-show="reportType === 'custom'"
                         x-transition
-                        class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                        class="
+                            grid
+                            grid-cols-1
+                            gap-4
+                            md:grid-cols-2
+                        "
                     >
 
+                        {{-- Tanggal Mulai --}}
                         <div>
+
                             <label
                                 for="start_date"
-                                class="block font-medium text-sm text-gray-700 dark:text-gray-300 mb-2"
+                                class="
+                                    mb-1.5
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-haskon-text
+                                "
                             >
                                 Tanggal Mulai
                             </label>
@@ -109,17 +267,33 @@
                                 name="start_date"
                                 value="{{ request('start_date') }}"
                                 :disabled="reportType !== 'custom'"
-                                class="border-gray-300 dark:border-gray-700
-                                    dark:bg-gray-900 dark:text-gray-300
-                                    rounded-md shadow-sm
-                                    focus:border-blue-500 focus:ring-blue-500"
+                                class="
+                                    w-full
+                                    rounded-lg
+                                    border-haskon-border
+                                    bg-white
+                                    text-haskon-text
+                                    shadow-sm
+                                    focus:border-haskon-accent
+                                    focus:ring-haskon-accent
+                                "
                             >
+
                         </div>
 
+
+                        {{-- Tanggal Akhir --}}
                         <div>
+
                             <label
                                 for="end_date"
-                                class="block font-medium text-sm text-gray-700 dark:text-gray-300 mb-2"
+                                class="
+                                    mb-1.5
+                                    block
+                                    text-sm
+                                    font-medium
+                                    text-haskon-text
+                                "
                             >
                                 Tanggal Akhir
                             </label>
@@ -130,43 +304,105 @@
                                 name="end_date"
                                 value="{{ request('end_date') }}"
                                 :disabled="reportType !== 'custom'"
-                                class="border-gray-300 dark:border-gray-700
-                                    dark:bg-gray-900 dark:text-gray-300
-                                    rounded-md shadow-sm
-                                    focus:border-blue-500 focus:ring-blue-500"
+                                class="
+                                    w-full
+                                    rounded-lg
+                                    border-haskon-border
+                                    bg-white
+                                    text-haskon-text
+                                    shadow-sm
+                                    focus:border-haskon-accent
+                                    focus:ring-haskon-accent
+                                "
                             >
+
                         </div>
 
                     </div>
 
 
-                    {{-- Tombol --}}
-                    <button
-                        type="submit"
-                        class="bg-blue-600 hover:bg-blue-700
-                            text-white font-semibold
-                            px-4 py-2 rounded-lg transition"
-                    >
-                        Tampilkan Laporan
-                    </button>
+                    {{-- ================================================= --}}
+                    {{-- ACTION BUTTONS --}}
+                    {{-- ================================================= --}}
 
-                    <div class="mt-6 flex flex-wrap items-center gap-3">
-                        {{-- Kembali ke Buku Kas --}}
-                        <a
-                            href="{{ route('buku-kas.dashboard') }}"
-                            class="inline-flex items-center justify-center
-                                px-4 py-2.5
-                                bg-gray-700 hover:bg-gray-800
-                                dark:bg-gray-600 dark:hover:bg-gray-500
-                                text-white font-semibold text-sm
+                    <div
+                        class="
+                            flex
+                            flex-wrap
+                            items-center
+                            gap-3
+                            border-t
+                            border-haskon-border
+                            pt-5
+                        "
+                    >
+
+                        {{-- Tampilkan Laporan --}}
+                        <button
+                            type="submit"
+                            class="
+                                inline-flex
+                                items-center
+                                justify-center
                                 rounded-lg
+                                bg-haskon-primary
+                                px-4
+                                py-2.5
+                                text-sm
+                                font-semibold
+                                text-haskon-inverted
+                                transition
+                                hover:bg-haskon-dark
                                 focus:outline-none
-                                focus:ring-2 focus:ring-gray-500
+                                focus:ring-2
+                                focus:ring-haskon-accent
                                 focus:ring-offset-2
-                                transition"
+                            "
                         >
                             <svg
-                                class="w-4 h-4 mr-2"
+                                class="mr-2 h-4 w-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M21 21l-4.35-4.35m2.35-5.65a8 8 0 11-16 0 8 8 0 0116 0z"
+                                />
+                            </svg>
+
+                            Tampilkan Laporan
+                        </button>
+
+
+                        {{-- Kembali --}}
+                        <a
+                            href="{{ route('buku-kas.dashboard') }}"
+                            class="
+                                inline-flex
+                                items-center
+                                justify-center
+                                rounded-lg
+                                border
+                                border-haskon-border
+                                bg-white
+                                px-4
+                                py-2.5
+                                text-sm
+                                font-semibold
+                                text-haskon-text
+                                transition
+                                hover:bg-haskon-surface
+                                focus:outline-none
+                                focus:ring-2
+                                focus:ring-haskon-accent
+                                focus:ring-offset-1
+                            "
+                        >
+                            <svg
+                                class="mr-2 h-4 w-4"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -181,197 +417,111 @@
 
                             Kembali ke Buku Kas
                         </a>
-                    </div>
-
-
-                </form>
-
-            </div>
-
-
-            {{-- Hasil laporan --}}
-            @isset($report)
-
-                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
-
-                    @if ($report['is_negative'])
-                        <div class="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 p-3 rounded-lg mb-6">
-                            Saldo akhir periode negatif.
-                        </div>
-                    @endif
-
-
-                    {{-- Ringkasan --}}
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-
-                        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                            <div class="text-sm text-gray-500 dark:text-gray-300">
-                                Saldo Awal
-                            </div>
-
-                            <div class="font-bold text-lg text-gray-900 dark:text-white">
-                                Rp{{ number_format($report['opening_balance'], 0, ',', '.') }}
-                            </div>
-                        </div>
-
-                        <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                            <div class="text-sm text-gray-500 dark:text-gray-300">
-                                Kas Masuk
-                            </div>
-
-                            <div class="font-bold text-lg text-green-600">
-                                Rp{{ number_format($report['total_income'], 0, ',', '.') }}
-                            </div>
-                        </div>
-
-                        <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                            <div class="text-sm text-gray-500 dark:text-gray-300">
-                                Kas Keluar
-                            </div>
-
-                            <div class="font-bold text-lg text-red-600">
-                                Rp{{ number_format($report['total_expense'], 0, ',', '.') }}
-                            </div>
-                        </div>
-
-                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                            <div class="text-sm text-gray-500 dark:text-gray-300">
-                                Saldo Akhir
-                            </div>
-
-                            <div class="font-bold text-lg text-blue-600">
-                                Rp{{ number_format($report['closing_balance'], 0, ',', '.') }}
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    {{-- Periode --}}
-                    <div class="mb-4 text-sm text-gray-600 dark:text-gray-300">
-                        Periode:
-
-                        <strong>
-                            {{ $report['start_date']->format('d/m/Y') }}
-                            -
-                            {{ $report['end_date']->format('d/m/Y') }}
-                        </strong>
-                    </div>
-
-
-                    {{-- Detail transaksi --}}
-                    <div class="overflow-x-auto">
-
-                        <table class="w-full text-sm">
-
-                            <thead>
-                                <tr class="border-b border-gray-200 dark:border-gray-700 text-left">
-
-                                    <th class="py-3 px-2">
-                                        Tanggal
-                                    </th>
-
-                                    <th class="py-3 px-2">
-                                        Keterangan
-                                    </th>
-
-                                    <th class="py-3 px-2 text-right">
-                                        Kas Masuk
-                                    </th>
-
-                                    <th class="py-3 px-2 text-right">
-                                        Kas Keluar
-                                    </th>
-
-                                    <th class="py-3 px-2 text-right">
-                                        Saldo
-                                    </th>
-
-                                </tr>
-                            </thead>
-
-                            <tbody>
-
-                                @forelse ($report['rows'] as $row)
-
-                                    <tr class="border-b border-gray-100 dark:border-gray-700">
-
-                                        <td class="py-3 px-2">
-                                            {{ $row['date']->format('d/m/Y') }}
-                                        </td>
-
-                                        <td class="py-3 px-2">
-                                            {{ $row['description'] }}
-                                        </td>
-
-                                        <td class="py-3 px-2 text-right text-green-600">
-                                            @if ($row['income'] !== null)
-                                                Rp{{ number_format($row['income'], 0, ',', '.') }}
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-
-                                        <td class="py-3 px-2 text-right text-red-600">
-                                            @if ($row['expense'] !== null)
-                                                Rp{{ number_format($row['expense'], 0, ',', '.') }}
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-
-                                        <td class="py-3 px-2 text-right font-semibold">
-                                            Rp{{ number_format($row['balance'], 0, ',', '.') }}
-                                        </td>
-
-                                    </tr>
-
-                                @empty
-
-                                    <tr>
-                                        <td
-                                            colspan="5"
-                                            class="py-8 text-center text-gray-500"
-                                        >
-                                            Tidak ada transaksi pada periode ini.
-                                        </td>
-                                    </tr>
-
-                                @endforelse
-
-                            </tbody>
-
-                        </table>
 
                     </div>
 
                 </div>
-                {{-- Export PDF --}}
-                <div class="mt-6">
-                    <a
-                        href="{{ route('buku-kas.reports.pdf', request()->query()) }}"
-                        class="inline-flex items-center
-                            bg-red-600 hover:bg-red-700
-                            text-white font-semibold
-                            px-4 py-2 rounded-lg transition"
+
+            </form>
+
+        </div>
+
+
+        {{-- ========================================================= --}}
+        {{-- HASIL LAPORAN --}}
+        {{-- ========================================================= --}}
+
+        @isset($report)
+
+            <div class="haskon-card overflow-hidden">
+
+
+                {{-- ================================================= --}}
+                {{-- REPORT HEADER --}}
+                {{-- ================================================= --}}
+
+                <div
+                    class="
+                        border-b
+                        border-haskon-border
+                        px-6
+                        py-5
+                    "
+                >
+
+                    <div
+                        class="
+                            flex
+                            flex-col
+                            gap-2
+                            sm:flex-row
+                            sm:items-center
+                            sm:justify-between
+                        "
                     >
-                        Export PDF
-                    </a>
-                    {{-- Export Excel --}}
-                    <a
-                        href="{{ route('buku-kas.reports.excel', request()->query()) }}"
-                        class="inline-flex items-center justify-center
-                            px-4 py-2.5
-                            bg-green-600 hover:bg-green-700
-                            text-white font-semibold text-sm
+
+                        <div>
+
+                            <h3 class="text-lg font-semibold text-haskon-primary">
+                                Hasil Laporan
+                            </h3>
+
+                            <p class="mt-1 text-sm text-haskon-muted">
+                                Ringkasan dan detail transaksi pada periode yang dipilih.
+                            </p>
+
+                        </div>
+
+
+                        {{-- Periode --}}
+                        <div
+                            class="
+                                inline-flex
+                                items-center
+                                rounded-lg
+                                bg-haskon-surface
+                                px-3
+                                py-2
+                                text-sm
+                                font-medium
+                                text-haskon-text
+                            "
+                        >
+                            {{ $report['start_date']->format('d/m/Y') }}
+                            <span class="mx-2 text-haskon-muted">—</span>
+                            {{ $report['end_date']->format('d/m/Y') }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- ================================================= --}}
+                {{-- NEGATIVE BALANCE WARNING --}}
+                {{-- ================================================= --}}
+
+                @if ($report['is_negative'])
+
+                    <div
+                        class="
+                            mx-6
+                            mt-6
+                            flex
+                            items-start
+                            gap-3
                             rounded-lg
-                            focus:outline-none
-                            focus:ring-2 focus:ring-green-500
-                            focus:ring-offset-2
-                            transition"
+                            border
+                            border-red-200
+                            bg-red-50
+                            px-4
+                            py-3
+                            text-red-800
+                        "
                     >
+
                         <svg
-                            class="w-4 h-4 mr-2"
+                            class="mt-0.5 h-5 w-5 flex-shrink-0"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -380,18 +530,461 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="2"
-                                d="M4 4h16v16H4z M8 8l3 3m0 0l3-3m-3 3v6"
+                                d="M12 9v4m0 4h.01M10.29 3.86l-7.82 14a2 2 0 001.74 3h15.58a2 2 0 001.74-3l-7.82-14a2 2 0 00-3.42 0z"
+                            />
+                        </svg>
+
+                        <div>
+
+                            <p class="text-sm font-semibold">
+                                Saldo akhir periode negatif.
+                            </p>
+
+                            <p class="mt-1 text-xs text-red-700">
+                                Periksa kembali aktivitas pemasukan dan pengeluaran pada periode ini.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                @endif
+
+
+                {{-- ================================================= --}}
+                {{-- SUMMARY --}}
+                {{-- ================================================= --}}
+
+                <div
+                    class="
+                        grid
+                        grid-cols-1
+                        gap-4
+                        px-6
+                        py-6
+                        md:grid-cols-2
+                        xl:grid-cols-4
+                    "
+                >
+
+                    {{-- Saldo Awal --}}
+                    <div class="haskon-card bg-haskon-surface p-4">
+
+                        <p class="text-sm text-haskon-muted">
+                            Saldo Awal
+                        </p>
+
+                        <p class="mt-2 text-xl font-bold text-haskon-primary">
+                            Rp{{ number_format($report['opening_balance'], 0, ',', '.') }}
+                        </p>
+
+                    </div>
+
+
+                    {{-- Kas Masuk --}}
+                    <div class="haskon-card bg-haskon-surface p-4">
+
+                        <p class="text-sm text-haskon-muted">
+                            Kas Masuk
+                        </p>
+
+                        <p class="mt-2 text-xl font-bold text-haskon-success">
+                            Rp{{ number_format($report['total_income'], 0, ',', '.') }}
+                        </p>
+
+                    </div>
+
+
+                    {{-- Kas Keluar --}}
+                    <div class="haskon-card bg-haskon-surface p-4">
+
+                        <p class="text-sm text-haskon-muted">
+                            Kas Keluar
+                        </p>
+
+                        <p class="mt-2 text-xl font-bold text-haskon-danger">
+                            Rp{{ number_format($report['total_expense'], 0, ',', '.') }}
+                        </p>
+
+                    </div>
+
+
+                    {{-- Saldo Akhir --}}
+                    <div class="relative overflow-hidden haskon-card bg-haskon-surface p-4">
+
+                        <p class="text-sm text-haskon-muted">
+                            Saldo Akhir
+                        </p>
+
+                        <p
+                            class="
+                                mt-2
+                                text-xl
+                                font-bold
+                                {{ $report['is_negative']
+                                    ? 'text-haskon-danger'
+                                    : 'text-haskon-primary'
+                                }}
+                            "
+                        >
+                            Rp{{ number_format($report['closing_balance'], 0, ',', '.') }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                {{-- ================================================= --}}
+                {{-- DETAIL TRANSAKSI --}}
+                {{-- ================================================= --}}
+
+                <div class="px-6 pb-6">
+
+                    <div
+                        class="
+                            overflow-hidden
+                            rounded-xl
+                            border
+                            border-haskon-border
+                        "
+                    >
+
+                        <div class="overflow-x-auto">
+
+                            <table class="min-w-full divide-y divide-haskon-border">
+
+                                {{-- Header --}}
+                                <thead class="bg-haskon-surface">
+
+                                    <tr>
+
+                                        <th
+                                            class="
+                                                whitespace-nowrap
+                                                px-4
+                                                py-3
+                                                text-left
+                                                text-xs
+                                                font-semibold
+                                                uppercase
+                                                tracking-wider
+                                                text-haskon-muted
+                                            "
+                                        >
+                                            Tanggal
+                                        </th>
+
+                                        <th
+                                            class="
+                                                px-4
+                                                py-3
+                                                text-left
+                                                text-xs
+                                                font-semibold
+                                                uppercase
+                                                tracking-wider
+                                                text-haskon-muted
+                                            "
+                                        >
+                                            Keterangan
+                                        </th>
+
+                                        <th
+                                            class="
+                                                whitespace-nowrap
+                                                px-4
+                                                py-3
+                                                text-right
+                                                text-xs
+                                                font-semibold
+                                                uppercase
+                                                tracking-wider
+                                                text-haskon-muted
+                                            "
+                                        >
+                                            Kas Masuk
+                                        </th>
+
+                                        <th
+                                            class="
+                                                whitespace-nowrap
+                                                px-4
+                                                py-3
+                                                text-right
+                                                text-xs
+                                                font-semibold
+                                                uppercase
+                                                tracking-wider
+                                                text-haskon-muted
+                                            "
+                                        >
+                                            Kas Keluar
+                                        </th>
+
+                                        <th
+                                            class="
+                                                whitespace-nowrap
+                                                px-4
+                                                py-3
+                                                text-right
+                                                text-xs
+                                                font-semibold
+                                                uppercase
+                                                tracking-wider
+                                                text-haskon-muted
+                                            "
+                                        >
+                                            Saldo
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                {{-- Body --}}
+                                <tbody
+                                    class="
+                                        divide-y
+                                        divide-haskon-border
+                                        bg-white
+                                    "
+                                >
+
+                                    @forelse ($report['rows'] as $row)
+
+                                        <tr class="transition hover:bg-haskon-surface">
+
+                                            {{-- Tanggal --}}
+                                            <td
+                                                class="
+                                                    whitespace-nowrap
+                                                    px-4
+                                                    py-3
+                                                    text-sm
+                                                    text-haskon-muted
+                                                "
+                                            >
+                                                {{ $row['date']->format('d/m/Y') }}
+                                            </td>
+
+
+                                            {{-- Keterangan --}}
+                                            <td
+                                                class="
+                                                    px-4
+                                                    py-3
+                                                    text-sm
+                                                    text-haskon-text
+                                                "
+                                            >
+                                                {{ $row['description'] }}
+                                            </td>
+
+
+                                            {{-- Kas Masuk --}}
+                                            <td
+                                                class="
+                                                    whitespace-nowrap
+                                                    px-4
+                                                    py-3
+                                                    text-right
+                                                    text-sm
+                                                    font-medium
+                                                    text-haskon-success
+                                                "
+                                            >
+                                                @if ($row['income'] !== null)
+                                                    Rp{{ number_format($row['income'], 0, ',', '.') }}
+                                                @else
+                                                    <span class="text-haskon-muted">-</span>
+                                                @endif
+                                            </td>
+
+
+                                            {{-- Kas Keluar --}}
+                                            <td
+                                                class="
+                                                    whitespace-nowrap
+                                                    px-4
+                                                    py-3
+                                                    text-right
+                                                    text-sm
+                                                    font-medium
+                                                    text-haskon-danger
+                                                "
+                                            >
+                                                @if ($row['expense'] !== null)
+                                                    Rp{{ number_format($row['expense'], 0, ',', '.') }}
+                                                @else
+                                                    <span class="text-haskon-muted">-</span>
+                                                @endif
+                                            </td>
+
+
+                                            {{-- Saldo --}}
+                                            <td
+                                                class="
+                                                    whitespace-nowrap
+                                                    px-4
+                                                    py-3
+                                                    text-right
+                                                    text-sm
+                                                    font-semibold
+                                                    text-haskon-primary
+                                                "
+                                            >
+                                                Rp{{ number_format($row['balance'], 0, ',', '.') }}
+                                            </td>
+
+                                        </tr>
+
+                                    @empty
+
+                                        <tr>
+
+                                            <td
+                                                colspan="5"
+                                                class="
+                                                    px-4
+                                                    py-10
+                                                    text-center
+                                                    text-sm
+                                                    text-haskon-muted
+                                                "
+                                            >
+                                                Tidak ada transaksi pada periode ini.
+                                            </td>
+
+                                        </tr>
+
+                                    @endforelse
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- ================================================= --}}
+                {{-- EXPORT --}}
+                {{-- ================================================= --}}
+
+                <div
+                    class="
+                        flex
+                        flex-wrap
+                        items-center
+                        gap-3
+                        border-t
+                        border-haskon-border
+                        px-6
+                        py-5
+                    "
+                >
+
+                    <span class="mr-2 text-sm font-medium text-haskon-muted">
+                        Export laporan:
+                    </span>
+
+
+                    {{-- PDF --}}
+                    <a
+                        href="{{ route('buku-kas.reports.pdf', request()->query()) }}"
+                        class="
+                            inline-flex
+                            items-center
+                            justify-center
+                            rounded-lg
+                            border
+                            border-haskon-border
+                            bg-white
+                            px-4
+                            py-2.5
+                            text-sm
+                            font-semibold
+                            text-haskon-text
+                            transition
+                            hover:bg-haskon-surface
+                            focus:outline-none
+                            focus:ring-2
+                            focus:ring-haskon-accent
+                            focus:ring-offset-1
+                        "
+                    >
+                        <svg
+                            class="mr-2 h-4 w-4 text-haskon-danger"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M7 18h10M7 14h10M9 10h6M5 4h10l4 4v12H5V4z"
+                            />
+                        </svg>
+
+                        Export PDF
+                    </a>
+
+
+                    {{-- Excel --}}
+                    <a
+                        href="{{ route('buku-kas.reports.excel', request()->query()) }}"
+                        class="
+                            inline-flex
+                            items-center
+                            justify-center
+                            rounded-lg
+                            border
+                            border-haskon-border
+                            bg-white
+                            px-4
+                            py-2.5
+                            text-sm
+                            font-semibold
+                            text-haskon-text
+                            transition
+                            hover:bg-haskon-surface
+                            focus:outline-none
+                            focus:ring-2
+                            focus:ring-haskon-accent
+                            focus:ring-offset-1
+                        "
+                    >
+                        <svg
+                            class="mr-2 h-4 w-4 text-haskon-success"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 4h16v16H4zM8 8l3 3m0 0l3-3m-3 3v6"
                             />
                         </svg>
 
                         Export Excel
                     </a>
+
                 </div>
 
+            </div>
 
-            @endisset
+        @endisset
 
-        </div>
     </div>
+
+</div>
 
 </x-app-layout>
