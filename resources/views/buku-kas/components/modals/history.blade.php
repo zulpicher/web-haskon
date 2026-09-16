@@ -14,9 +14,8 @@
         @click="closeModal()"
     ></div>
 
-```
-{{-- Modal --}}
-<div
+    {{-- Modal --}}
+    <div
     x-show="modal === 'history'"
     x-transition
     class="
@@ -255,7 +254,8 @@
                         sticky
                         top-0
                         z-10
-                        bg-haskon-surface
+                        bg-zinc-900
+                        text-zinc-200
                     "
                 >
 
@@ -267,10 +267,10 @@
                                 py-3
                                 text-left
                                 text-xs
-                                font-semibold
+                                font-bold
                                 uppercase
                                 tracking-wider
-                                text-haskon-muted
+                                text-zinc-300
                             "
                         >
                             Tanggal
@@ -282,10 +282,10 @@
                                 py-3
                                 text-left
                                 text-xs
-                                font-semibold
+                                font-bold
                                 uppercase
                                 tracking-wider
-                                text-haskon-muted
+                                text-zinc-300
                             "
                         >
                             Keterangan
@@ -297,10 +297,10 @@
                                 py-3
                                 text-left
                                 text-xs
-                                font-semibold
+                                font-bold
                                 uppercase
                                 tracking-wider
-                                text-haskon-muted
+                                text-zinc-300
                             "
                         >
                             Jenis
@@ -312,10 +312,10 @@
                                 py-3
                                 text-right
                                 text-xs
-                                font-semibold
+                                font-bold
                                 uppercase
                                 tracking-wider
-                                text-haskon-muted
+                                text-zinc-300
                             "
                         >
                             Jumlah
@@ -327,10 +327,10 @@
                                 py-3
                                 text-right
                                 text-xs
-                                font-semibold
+                                font-bold
                                 uppercase
                                 tracking-wider
-                                text-haskon-muted
+                                text-zinc-300
                             "
                         >
                             Aksi
@@ -600,49 +600,43 @@
 
 
                                     {{-- Hapus --}}
-                                    <form
-                                        method="POST"
-                                        action="{{ route('buku-kas.transactions.destroy', $transaction) }}"
-                                        onsubmit="return confirm('Yakin ingin menghapus transaksi ini?')"
+                                    <button
+                                        type="button"
+                                        @click="openDelete(@js($historyData))"
+                                        class="
+                                            inline-flex
+                                            h-8
+                                            w-8
+                                            items-center
+                                            justify-center
+                                            rounded-lg
+                                            bg-rose-50
+                                            text-rose-600
+                                            border
+                                            border-rose-200
+                                            transition
+                                            hover:bg-rose-600
+                                            hover:text-white
+                                            focus:outline-none
+                                            focus:ring-2
+                                            focus:ring-rose-500
+                                        "
+                                        title="Hapus"
                                     >
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button
-                                            type="submit"
-                                            class="
-                                                inline-flex
-                                                h-8
-                                                w-8
-                                                items-center
-                                                justify-center
-                                                rounded-lg
-                                                text-haskon-danger
-                                                transition
-                                                hover:bg-haskon-surface
-                                                hover:text-haskon-danger
-                                                focus:outline-none
-                                                focus:ring-2
-                                                focus:ring-haskon-danger
-                                            "
-                                            title="Hapus"
+                                        <svg
+                                            class="h-4 w-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
                                         >
-                                            <svg
-                                                class="h-4 w-4"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3m-7 0h8"
-                                                />
-                                            </svg>
-                                        </button>
-
-                                    </form>
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3m-7 0h8"
+                                            />
+                                        </svg>
+                                    </button>
 
                                 </div>
 

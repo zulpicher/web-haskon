@@ -8,17 +8,26 @@
 {{-- ========================================================= --}}
 
 <x-slot name="header">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-bold tracking-tight text-zinc-900">
+                Laporan Buku Kas
+            </h2>
+            <p class="mt-0.5 text-sm font-medium text-zinc-500">
+                Buat dan unduh rekap aktivitas keuangan berdasarkan periode.
+            </p>
+        </div>
 
-    <div>
-        <h2 class="text-xl font-semibold leading-tight text-haskon-primary">
-            Laporan Buku Kas
-        </h2>
-
-        <p class="mt-1 text-sm text-haskon-muted">
-            Buat dan lihat laporan aktivitas keuangan berdasarkan periode.
-        </p>
+        <a
+            href="{{ route('buku-kas.dashboard') }}"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-white border border-zinc-300 text-zinc-800 hover:bg-zinc-50 hover:border-zinc-400 shadow-xs transition"
+        >
+            <svg class="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Kembali ke Buku Kas
+        </a>
     </div>
-
 </x-slot>
 
 

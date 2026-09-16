@@ -1,25 +1,34 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+    <div class="mb-6">
+        <h1 class="text-xl font-bold text-zinc-900">Lupa Password?</h1>
+        <p class="text-xs text-zinc-500 mt-1 leading-relaxed">
+            Tidak masalah. Masukkan alamat email Anda yang terdaftar, kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda.
+        </p>
     </div>
 
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('password.email') }}">
+    <form method="POST" action="{{ route('password.email') }}" class="space-y-4">
         @csrf
 
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <x-input-label for="email" :value="__('Alamat Email')" />
+            <x-text-input id="email" class="block w-full" type="email" name="email" :value="old('email')" placeholder="nama@haskon.co.id" required autofocus />
+            <x-input-error :messages="$errors->get('email')" class="mt-1.5" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
+        <div class="pt-2">
+            <x-primary-button class="w-full py-3 text-sm">
+                {{ __('Kirim Tautan Reset Password') }}
             </x-primary-button>
+        </div>
+
+        <div class="pt-4 border-t border-zinc-100 text-center">
+            <a href="{{ route('login') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-zinc-600 hover:text-zinc-900 transition">
+                &larr; {{ __('Kembali ke halaman login') }}
+            </a>
         </div>
     </form>
 </x-guest-layout>

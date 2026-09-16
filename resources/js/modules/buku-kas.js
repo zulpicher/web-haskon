@@ -11,6 +11,13 @@ export default function bukuKas() {
 
         detail: {},
 
+        deleteId: null,
+        deleteDescription: '',
+        deleteAmountFormatted: '',
+        deleteType: '',
+        deleteDateFormatted: '',
+        deleteAction: '',
+
         historySearch: '',
         historyType: '',
         historyStartDate: '',
@@ -18,6 +25,16 @@ export default function bukuKas() {
 
         openAdd() {
             this.modal = 'add';
+        },
+
+        openDelete(transaction) {
+            this.deleteId = transaction.id;
+            this.deleteDescription = transaction.description;
+            this.deleteAmountFormatted = transaction.amountFormatted || ('Rp' + Number(transaction.amount).toLocaleString('id-ID'));
+            this.deleteType = transaction.type;
+            this.deleteDateFormatted = transaction.dateFormatted || transaction.date;
+            this.deleteAction = this.$root.dataset.transactionUrl + '/' + transaction.id;
+            this.modal = 'delete';
         },
 
         openEdit(transaction) {

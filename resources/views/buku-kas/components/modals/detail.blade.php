@@ -14,10 +14,9 @@
         @click="closeModal()"
     ></div>
 
-```
-{{-- Modal --}}
-<div
-    x-show="modal === 'detail'"
+    {{-- Modal --}}
+    <div
+        x-show="modal === 'detail'"
     x-transition
     class="
         relative

@@ -1,6 +1,6 @@
 <nav
     x-data="{ open: false }"
-    class="bg-white border-b border-haskon-border"
+    class="bg-zinc-900 border-b border-zinc-800 text-white shadow-sm"
 >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -16,11 +16,13 @@
                         href="{{ route('dashboard') }}"
                         class="flex items-center gap-3"
                     >
-                        <x-application-logo
-                            class="block h-9 w-auto fill-current text-haskon-primary"
-                        />
+                        <div class="p-1 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center">
+                            <x-application-logo
+                                class="block h-7 w-auto"
+                            />
+                        </div>
 
-                        <span class="hidden sm:block font-bold tracking-wide text-haskon-primary">
+                        <span class="hidden sm:block font-bold tracking-wider text-sm text-white">
                             PT HASKON CITRA PERDANA
                         </span>
                     </a>
@@ -33,12 +35,12 @@
                     <a
                         href="{{ route('dashboard') }}"
                         class="
-                            inline-flex items-center px-4 py-2 rounded-lg
-                            text-sm font-semibold
+                            inline-flex items-center px-3.5 py-2 rounded-lg
+                            text-sm font-medium
                             transition duration-150
                             {{ request()->routeIs('dashboard')
-                                ? 'bg-haskon-accent-soft text-haskon-primary'
-                                : 'text-haskon-muted hover:text-haskon-primary hover:bg-haskon-surface'
+                                ? 'bg-zinc-800 text-amber-400 font-semibold border border-zinc-700/80 shadow-inner'
+                                : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
                             }}
                         "
                     >
@@ -49,12 +51,12 @@
                     <a
                         href="{{ route('buku-kas.dashboard') }}"
                         class="
-                            inline-flex items-center px-4 py-2 rounded-lg
-                            text-sm font-semibold
+                            inline-flex items-center px-3.5 py-2 rounded-lg
+                            text-sm font-medium
                             transition duration-150
                             {{ request()->routeIs('buku-kas.*')
-                                ? 'bg-haskon-accent-soft text-haskon-primary'
-                                : 'text-haskon-muted hover:text-haskon-primary hover:bg-haskon-surface'
+                                ? 'bg-zinc-800 text-amber-400 font-semibold border border-zinc-700/80 shadow-inner'
+                                : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
                             }}
                         "
                     >
@@ -69,23 +71,24 @@
             {{-- ================================================= --}}
             <div class="hidden sm:flex sm:items-center sm:ms-6">
 
-                <x-dropdown align="right" width="48">
+                <x-dropdown align="right" width="48" content-classes="py-1.5 bg-zinc-900 border border-zinc-700/90 rounded-xl shadow-xl">
 
                     <x-slot name="trigger">
 
                         <button
                             class="
-                                inline-flex items-center gap-2
-                                px-3 py-2
+                                inline-flex items-center gap-2.5
+                                px-3 py-1.5
                                 rounded-lg
                                 text-sm font-medium
-                                text-haskon-muted
-                                bg-white
-                                hover:bg-haskon-surface
-                                hover:text-haskon-primary
+                                text-zinc-200
+                                bg-zinc-800/90
+                                hover:bg-zinc-800
+                                hover:text-white
+                                border border-zinc-700/70
                                 focus:outline-none
                                 focus:ring-2
-                                focus:ring-haskon-accent
+                                focus:ring-amber-400
                                 transition duration-150
                             "
                         >
@@ -94,22 +97,23 @@
                             <span
                                 class="
                                     inline-flex items-center justify-center
-                                    w-8 h-8
+                                    w-7 h-7
                                     rounded-full
-                                    bg-haskon-primary
-                                    text-haskon-inverted
+                                    bg-amber-400
+                                    text-zinc-950
                                     text-xs font-bold
+                                    shadow-xs
                                 "
                             >
                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </span>
 
-                            <span>
+                            <span class="font-medium text-zinc-200">
                                 {{ Auth::user()->name }}
                             </span>
 
                             <svg
-                                class="w-4 h-4"
+                                class="w-4 h-4 text-zinc-400"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -131,7 +135,7 @@
                         {{-- Profile --}}
                         <x-dropdown-link
                             :href="route('profile.edit')"
-                            class="text-haskon-text hover:bg-haskon-surface"
+                            class="text-zinc-200 hover:bg-zinc-800 hover:text-white"
                         >
                             {{ __('Profile') }}
                         </x-dropdown-link>
@@ -142,7 +146,7 @@
 
                             <x-dropdown-link
                                 :href="route('logout')"
-                                class="text-haskon-danger hover:bg-haskon-surface"
+                                class="text-red-400 hover:bg-zinc-800 hover:text-red-300"
                                 onclick="
                                     event.preventDefault();
                                     this.closest('form').submit();
@@ -168,12 +172,12 @@
                     class="
                         inline-flex items-center justify-center
                         p-2 rounded-lg
-                        text-haskon-muted
-                        hover:text-haskon-primary
-                        hover:bg-haskon-surface
+                        text-zinc-400
+                        hover:text-white
+                        hover:bg-zinc-800
                         focus:outline-none
                         focus:ring-2
-                        focus:ring-haskon-accent
+                        focus:ring-amber-400
                         transition duration-150
                     "
                 >
@@ -215,7 +219,7 @@
     {{-- ========================================================= --}}
     <div
         :class="{ 'block': open, 'hidden': !open }"
-        class="hidden sm:hidden border-t border-haskon-border"
+        class="hidden sm:hidden border-t border-zinc-800 bg-zinc-900"
     >
 
         {{-- Navigation Links --}}
@@ -229,8 +233,8 @@
                     text-sm font-semibold
                     transition
                     {{ request()->routeIs('dashboard')
-                        ? 'bg-haskon-accent-soft text-haskon-primary'
-                        : 'text-haskon-muted hover:text-haskon-primary hover:bg-haskon-surface'
+                        ? 'bg-zinc-800 text-amber-400 border border-zinc-700/80'
+                        : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
                     }}
                 "
             >
@@ -245,8 +249,8 @@
                     text-sm font-semibold
                     transition
                     {{ request()->routeIs('buku-kas.*')
-                        ? 'bg-haskon-accent-soft text-haskon-primary'
-                        : 'text-haskon-muted hover:text-haskon-primary hover:bg-haskon-surface'
+                        ? 'bg-zinc-800 text-amber-400 border border-zinc-700/80'
+                        : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
                     }}
                 "
             >
@@ -256,7 +260,7 @@
         </div>
 
         {{-- Mobile User --}}
-        <div class="pt-4 pb-3 border-t border-haskon-border">
+        <div class="pt-4 pb-3 border-t border-zinc-800">
 
             <div class="px-4">
 
@@ -267,8 +271,8 @@
                             inline-flex items-center justify-center
                             w-10 h-10
                             rounded-full
-                            bg-haskon-primary
-                            text-haskon-inverted
+                            bg-amber-400
+                            text-zinc-950
                             text-sm font-bold
                         "
                     >
@@ -276,11 +280,11 @@
                     </span>
 
                     <div>
-                        <div class="font-semibold text-sm text-haskon-text">
+                        <div class="font-semibold text-sm text-zinc-100">
                             {{ Auth::user()->name }}
                         </div>
 
-                        <div class="text-xs text-haskon-muted">
+                        <div class="text-xs text-zinc-400">
                             {{ Auth::user()->email }}
                         </div>
                     </div>
@@ -297,8 +301,9 @@
                     class="
                         block px-4 py-2.5 rounded-lg
                         text-sm font-medium
-                        text-haskon-text
-                        hover:bg-haskon-surface
+                        text-zinc-300
+                        hover:bg-zinc-800
+                        hover:text-white
                         transition
                     "
                 >
@@ -315,8 +320,9 @@
                             w-full text-left
                             px-4 py-2.5 rounded-lg
                             text-sm font-medium
-                            text-haskon-danger
-                            hover:bg-haskon-surface
+                            text-red-400
+                            hover:bg-zinc-800
+                            hover:text-red-300
                             transition
                         "
                     >
