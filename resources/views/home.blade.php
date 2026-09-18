@@ -191,11 +191,11 @@
 
                             <div>
                                 <h3 class="text-lg font-bold text-zinc-900">
-                                    Absensi
+                                    tesdlu
                                 </h3>
 
                                 <p class="mt-0.5 text-sm text-zinc-500">
-                                    Kelola kehadiran dan aktivitas karyawan.
+                                    tes0987asdasd.
                                 </p>
                             </div>
                         </div>
@@ -239,11 +239,11 @@
 
                             <div>
                                 <h3 class="text-lg font-bold text-zinc-900">
-                                    Inventory
+                                    tes123
                                 </h3>
 
                                 <p class="mt-0.5 text-sm text-zinc-500">
-                                    Kelola stok, aset, dan inventaris perusahaan.
+                                    tes12345.
                                 </p>
                             </div>
                         </div>
