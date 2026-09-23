@@ -94,7 +94,7 @@ class GroupController extends Controller
         ]);
 
         $group->users()->syncWithoutDetaching([
-            $request->user_id
+            $request->user_id,
         ]);
 
         return redirect()
