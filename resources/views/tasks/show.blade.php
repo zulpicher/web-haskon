@@ -202,63 +202,203 @@
 
                 {{-- Comments --}}
                 <div class="p-6 sm:p-8">
-                    <div class="mb-6 flex items-center justify-between">
-                        <div>
-                            <h3 class="text-lg font-bold text-haskon-dark">
-                                Komentar
-                            </h3>
 
-                            <p class="mt-1 text-sm text-haskon-muted">
-                                Diskusi dan catatan mengenai task.
-                            </p>
-                        </div>
+                    {{-- Header --}}
+                    <div class="mb-6">
+                        <h3 class="text-lg font-bold text-haskon-dark">
+                            Komentar
+                        </h3>
 
-                        <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-haskon-dark">
-                            {{ $task->comments->count() }}
-                        </span>
+                        <p class="mt-1 text-sm text-haskon-muted">
+                            Diskusi dan catatan mengenai task.
+                        </p>
                     </div>
 
-                    @forelse ($task->comments as $comment)
-                        <div class="border-b border-haskon-border py-5 first:pt-0 last:border-b-0">
-                            <div class="flex items-start justify-between gap-4">
-                                <div>
-                                    <p class="text-sm font-semibold text-haskon-dark">
-                                        {{ $comment->user->name }}
-                                    </p>
+                    {{-- Add Comment --}}
+                    <div class="mb-8 rounded-lg border border-haskon-border bg-gray-50 p-5">
 
-                                    <p class="mt-1 text-xs text-haskon-muted">
-                                        {{ $comment->created_at->format('d M Y, H:i') }}
+                        <h4 class="text-sm font-bold text-haskon-dark">
+                            Tambahkan Komentar
+                        </h4>
+
+                        <form
+                            method="POST"
+                            action="{{ route('tasks.comments.store', $task) }}"
+                            enctype="multipart/form-data"
+                            class="mt-4"
+                        >
+                            @csrf
+
+                            <textarea
+                                name="comment"
+                                rows="4"
+                                required
+                                maxlength="5000"
+                                placeholder="Tulis komentar..."
+                                class="block w-full rounded-lg border border-haskon-border bg-white px-4 py-3 text-sm text-haskon-dark shadow-sm focus:border-haskon-accent focus:ring-haskon-accent"
+                            >{{ old('comment') }}</textarea>
+
+                            @error('comment')
+                                <p class="mt-2 text-sm text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+
+                            <div class="mt-4">
+                                <label
+                                    for="attachment"
+                                    class="block text-sm font-semibold text-haskon-dark"
+                                >
+                                    Lampiran
+                                </label>
+
+                                <input
+                                    id="attachment"
+                                    name="attachment"
+                                    type="file"
+                                    accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip"
+                                    class="mt-2 block w-full rounded-lg border border-haskon-border bg-white px-3 py-2 text-sm text-haskon-dark shadow-sm file:mr-4 file:rounded-md file:border-0 file:bg-haskon-dark file:px-4 file:py-2 file:font-semibold file:text-white hover:file:opacity-90"
+                                >
+
+                                <p class="mt-2 text-xs text-haskon-muted">
+                                    Maksimal 10 MB.
+                                    Format: JPG, PNG, PDF, DOC, DOCX, XLS, XLSX, TXT, ZIP.
+                                </p>
+
+                                @error('attachment')
+                                    <p class="mt-2 text-sm text-red-600">
+                                        {{ $message }}
                                     </p>
-                                </div>
+                                @enderror
                             </div>
 
-                            <p class="mt-3 whitespace-pre-line text-sm leading-6 text-gray-700">
-                                {{ $comment->comment }}
-                            </p>
+                            <div class="mt-3 flex justify-end">
+                                <button
+                                    type="submit"
+                                    class="inline-flex items-center justify-center rounded-lg bg-haskon-dark px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+                                >
+                                    Tambahkan Komentar
+                                </button>
+                            </div>
+                        </form>
+                        
+                    </div>
 
-                            @if ($comment->attachment_name)
-                                <div class="mt-3 rounded-lg border border-haskon-border bg-gray-50 px-4 py-3">
-                                    <p class="text-xs font-semibold text-haskon-dark">
-                                        Lampiran
-                                    </p>
+                    {{-- Comment List --}}
+                    <div>
+                        <div class="mb-4 flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-haskon-dark">
+                                Riwayat Komentar
+                            </h4>
 
-                                    <p class="mt-1 text-xs text-haskon-muted">
-                                        {{ $comment->attachment_name }}
-                                    </p>
+                            <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-haskon-dark">
+                                {{ $task->comments->count() }}
+                            </span>
+                        </div>
+
+                        @forelse ($task->comments as $comment)
+
+                            <div class="border-b border-haskon-border py-5 first:pt-0 last:border-b-0">
+
+                                <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+
+                                    <div class="min-w-0">
+                                        <div class="flex flex-wrap items-center gap-2">
+
+                                            <p class="text-sm font-semibold text-haskon-dark">
+                                                {{ $comment->user->name }}
+                                            </p>
+
+                                            @if ($comment->user_id === auth()->id())
+                                                <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-haskon-muted">
+                                                    Anda
+                                                </span>
+                                            @endif
+
+                                        </div>
+
+                                        <p class="mt-1 text-xs text-haskon-muted">
+                                            {{ $comment->created_at->format('d M Y, H:i') }}
+                                        </p>
+                                    </div>
+
+                                    {{-- Delete Comment --}}
+                                    @if (auth()->user()->isAdmin() || $comment->user_id === auth()->id())
+                                        <form
+                                            method="POST"
+                                            action="{{ route('tasks.comments.destroy', $comment) }}"
+                                            onsubmit="return confirm('Yakin ingin menghapus komentar ini?')"
+                                        >
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button
+                                                type="submit"
+                                                class="text-xs font-semibold text-red-600 transition hover:text-red-800"
+                                            >
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    @endif
+
                                 </div>
-                            @endif
-                        </div>
-                    @empty
-                        <div class="rounded-lg border border-dashed border-haskon-border bg-gray-50 px-6 py-8 text-center">
-                            <p class="text-sm font-semibold text-haskon-dark">
-                                Belum ada komentar
-                            </p>
 
-                            <p class="mt-1 text-xs text-haskon-muted">
-                                Komentar dapat ditambahkan pada tahap berikutnya.
-                            </p>
-                        </div>
-                    @endforelse
+                                {{-- Comment Content --}}
+                                <p class="mt-4 whitespace-pre-line text-sm leading-6 text-gray-700">
+                                    {{ $comment->comment }}
+                                </p>
+
+                                {{-- Attachment Placeholder --}}
+                                @if ($comment->attachment_name)
+                                    <div class="mt-4 rounded-lg border border-haskon-border bg-gray-50 px-4 py-3">
+                                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+                                            <div class="min-w-0">
+                                                <p class="text-xs font-semibold text-haskon-dark">
+                                                    Lampiran
+                                                </p>
+
+                                                <p class="mt-1 truncate text-sm text-haskon-muted">
+                                                    {{ $comment->attachment_name }}
+                                                </p>
+
+                                                @if ($comment->attachment_size)
+                                                    <p class="mt-1 text-xs text-haskon-muted">
+                                                        {{ number_format($comment->attachment_size / 1024, 1) }} KB
+                                                    </p>
+                                                @endif
+                                            </div>
+
+                                            <a
+                                                href="{{ route('tasks.comments.attachment', $comment) }}"
+                                                class="inline-flex shrink-0 items-center justify-center rounded-lg border border-haskon-border bg-white px-4 py-2 text-xs font-semibold text-haskon-dark transition hover:bg-gray-100"
+                                            >
+                                                Unduh File
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                @endif
+
+                            </div>
+
+                        @empty
+
+                            <div class="rounded-lg border border-dashed border-haskon-border bg-gray-50 px-6 py-8 text-center">
+
+                                <p class="text-sm font-semibold text-haskon-dark">
+                                    Belum ada komentar
+                                </p>
+
+                                <p class="mt-1 text-xs text-haskon-muted">
+                                    Jadilah yang pertama memberikan komentar pada task ini.
+                                </p>
+
+                            </div>
+
+                        @endforelse
+                    </div>
+
                 </div>
 
                 {{-- Bottom Actions --}}

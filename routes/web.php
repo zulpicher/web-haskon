@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TaskCommentController;
 use App\Http\Controllers\Admin\GroupController;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +70,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     /*Modul task manajement*/    
     Route::resource('tasks', TaskController::class);
+    Route::post(
+        'tasks/{task}/comments',
+        [TaskCommentController::class, 'store']
+    )->name('tasks.comments.store');
+    Route::get(
+        'task-comments/{comment}/attachment',
+        [TaskCommentController::class, 'attachment']
+    )->name('tasks.comments.attachment');
+    Route::delete(
+        'task-comments/{comment}',
+        [TaskCommentController::class, 'destroy']
+    )->name('tasks.comments.destroy');
 
 });
 

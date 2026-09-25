@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TaskRequest;
 use App\Models\Group;
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -85,7 +84,7 @@ class TaskController extends Controller
     {
         $validated = $request->validated();
 
-        $group = Group::with('users')
+        $group = Group::with('users:id,name')
             ->findOrFail($validated['group_id']);
 
         abort_unless(
