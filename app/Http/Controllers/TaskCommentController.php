@@ -90,8 +90,12 @@ class TaskCommentController extends Controller
             'File lampiran tidak ditemukan.'
         );
 
-        return Storage::disk('public')->download(
-            $comment->attachment_path,
+        $filePath = Storage::disk('public')->path(
+            $comment->attachment_path
+        );
+
+        return response()->download(
+            $filePath,
             $comment->attachment_name
         );
     }
