@@ -1,4 +1,3 @@
-```blade
 <x-app-layout>
     <div class="min-h-screen bg-haskon-surface py-8">
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -129,19 +128,28 @@
                         </p>
                     </div>
 
-                    {{-- Assignee --}}
+                    {{-- Assignees --}}
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-wide text-haskon-muted">
                             Ditugaskan Kepada
                         </p>
 
-                        <p class="mt-2 text-sm font-semibold text-haskon-dark">
-                            {{ $task->assignee->name }}
-                        </p>
-
-                        <p class="mt-1 text-xs text-haskon-muted">
-                            {{ $task->assignee->email }}
-                        </p>
+                        <div class="mt-2 space-y-2">
+                            @forelse ($task->assignees as $assignee)
+                                <div>
+                                    <p class="text-sm font-semibold text-haskon-dark">
+                                        {{ $assignee->name }}
+                                    </p>
+                                    <p class="text-xs text-haskon-muted">
+                                        {{ $assignee->email }}
+                                    </p>
+                                </div>
+                            @empty
+                                <p class="text-sm text-haskon-muted">
+                                    Belum ada penugasan
+                                </p>
+                            @endforelse
+                        </div>
                     </div>
 
                     {{-- Creator --}}
@@ -442,4 +450,3 @@
         </div>
     </div>
 </x-app-layout>
-```

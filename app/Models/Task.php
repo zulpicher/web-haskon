@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Task extends Model
 {
@@ -33,9 +34,12 @@ class Task extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function assignee(): BelongsTo
+    public function assignees(): BelongsToMany
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsToMany(
+            User::class,
+            'task_user'
+        )->withTimestamps();
     }
 
     public function group(): BelongsTo
@@ -51,10 +55,7 @@ class Task extends Model
     public function isOverdue(): bool
     {
         return $this->due_date !== null
-            && $this->due_date->isPast()
-            && ! in_array($this->status, [
-                'completed',
-                'cancelled',
-            ]);
+            && $this->due_date->lt(today())
+            && ! in_array($this->status, ['completed', 'cancelled']);
     }
 }

@@ -49,9 +49,9 @@
                         ),
 
                         selectedGroup: @js(old('group_id', '')),
-                        selectedUser: @js(old('assigned_to', '')),
+                        selectedAssignees: @js(array_map('intval', (array) old('assigned_to', []))),
 
-                        get members() {
+                        get selectedGroupUsers() {
                             const group = this.groups.find(
                                 group => String(group.id) === String(this.selectedGroup)
                             );
@@ -59,14 +59,12 @@
                             return group ? group.users : [];
                         },
 
-                        changeGroup() {
-                            const exists = this.members.some(
-                                user => String(user.id) === String(this.selectedUser)
-                            );
+                        isUserSelected(userId) {
+                            return this.selectedAssignees.includes(Number(userId));
+                        },
 
-                            if (!exists) {
-                                this.selectedUser = '';
-                            }
+                        changeGroup() {
+                            this.selectedAssignees = [];
                         }
                     }"
                     class="space-y-6"
@@ -125,108 +123,125 @@
                         @enderror
                     </div>
 
-                    {{-- Group & Assignment --}}
-                    <div class="grid gap-6 md:grid-cols-2">
+                    {{-- Group --}}
+                    <div>
+                        <label
+                            for="group_id"
+                            class="block text-sm font-semibold text-haskon-dark"
+                        >
+                            Group
+                        </label>
 
-                        {{-- Group --}}
-                        <div>
-                            <label
-                                for="group_id"
-                                class="block text-sm font-semibold text-haskon-dark"
-                            >
-                                Group
-                            </label>
+                        <select
+                            id="group_id"
+                            name="group_id"
+                            x-model="selectedGroup"
+                            @change="changeGroup()"
+                            required
+                            class="mt-2 block w-full rounded-lg border border-haskon-border bg-white px-4 py-3 text-sm text-haskon-dark shadow-sm focus:border-haskon-accent focus:ring-haskon-accent"
+                        >
+                            <option value="">
+                                Pilih group
+                            </option>
 
-                            <select
-                                id="group_id"
-                                name="group_id"
-                                x-model="selectedGroup"
-                                @change="changeGroup()"
-                                required
-                                class="mt-2 block w-full rounded-lg border border-haskon-border bg-white px-4 py-3 text-sm text-haskon-dark shadow-sm focus:border-haskon-accent focus:ring-haskon-accent"
-                            >
-                                <option value="">
-                                    Pilih group
+                            @foreach ($groups as $group)
+                                <option value="{{ $group->id }}">
+                                    {{ $group->name }}
                                 </option>
+                            @endforeach
+                        </select>
 
-                                @foreach ($groups as $group)
-                                    <option value="{{ $group->id }}">
-                                        {{ $group->name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                        @error('group_id')
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-                            @error('group_id')
-                                <p class="mt-1 text-sm text-red-600">
-                                    {{ $message }}
-                                </p>
-                            @enderror
-                        </div>
+                    {{-- Ditugaskan Kepada (Checkbox List) --}}
+                    <div>
+                        <label class="block text-sm font-semibold text-haskon-dark">
+                            Ditugaskan kepada
+                        </label>
 
-                        {{-- Ditugaskan Kepada --}}
-                        <div>
-                            <label
-                                for="assigned_to"
-                                class="block text-sm font-semibold text-haskon-dark"
-                            >
-                                Ditugaskan Kepada
-                            </label>
+                        <p class="mt-1 text-xs text-gray-500">
+                            Pilih satu atau lebih anggota dari group yang dipilih.
+                        </p>
 
-                            <select
-                                id="assigned_to"
-                                name="assigned_to"
-                                x-model="selectedUser"
-                                required
-                                :disabled="!selectedGroup || members.length === 0"
-                                class="mt-2 block w-full rounded-lg border border-haskon-border bg-white px-4 py-3 text-sm text-haskon-dark shadow-sm disabled:cursor-not-allowed disabled:bg-gray-100 focus:border-haskon-accent focus:ring-haskon-accent"
-                            >
-                                <option value="">
-                                    Pilih anggota
-                                </option>
-
+                        <div
+                            class="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3"
+                            x-show="selectedGroupUsers.length > 0"
+                            x-cloak
+                        >
+                            <div class="space-y-2">
                                 <template
-                                    x-for="user in members"
+                                    x-for="user in selectedGroupUsers"
                                     :key="user.id"
                                 >
-                                    <option
-                                        :value="user.id"
-                                        x-text="user.name"
-                                    ></option>
+                                    <label
+                                        class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 transition hover:border-gray-400"
+                                        :class="isUserSelected(user.id)
+                                            ? 'border-black bg-gray-50'
+                                            : ''"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            name="assigned_to[]"
+                                            :value="user.id"
+                                            x-model="selectedAssignees"
+                                            class="h-4 w-4 rounded border-gray-300 text-black focus:ring-black"
+                                        >
+
+                                        <div class="flex-1">
+                                            <div
+                                                class="text-sm font-medium text-gray-900"
+                                                x-text="user.name"
+                                            ></div>
+
+                                            <div class="text-xs text-gray-500">
+                                                Anggota group
+                                            </div>
+                                        </div>
+
+                                        <span
+                                            x-show="isUserSelected(user.id)"
+                                            class="text-xs font-medium text-gray-700"
+                                        >
+                                            Dipilih
+                                        </span>
+                                    </label>
                                 </template>
-                            </select>
-
-                            {{-- Info berdasarkan kondisi --}}
-                            <p
-                                x-show="!selectedGroup"
-                                x-cloak
-                                class="mt-2 text-xs text-haskon-muted"
-                            >
-                                Pilih group terlebih dahulu.
-                            </p>
-
-                            <p
-                                x-show="selectedGroup && members.length === 0"
-                                x-cloak
-                                class="mt-2 text-xs text-red-600"
-                            >
-                                Group ini belum memiliki anggota.
-                            </p>
-
-                            <p
-                                x-show="selectedGroup && members.length > 0"
-                                x-cloak
-                                class="mt-2 text-xs text-haskon-muted"
-                            >
-                                Pilih anggota yang akan bertanggung jawab atas task ini.
-                            </p>
-
-                            @error('assigned_to')
-                                <p class="mt-1 text-sm text-red-600">
-                                    {{ $message }}
-                                </p>
-                            @enderror
+                            </div>
                         </div>
 
+                        <div
+                            x-show="selectedGroupUsers.length === 0"
+                            x-cloak
+                            class="mt-3 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-500"
+                        >
+                            Pilih group terlebih dahulu untuk melihat anggota.
+                        </div>
+
+                        <div
+                            x-show="selectedAssignees.length > 0"
+                            x-cloak
+                            class="mt-2 text-xs text-gray-600"
+                        >
+                            <span x-text="selectedAssignees.length"></span>
+                            anggota dipilih.
+                        </div>
+
+                        @error('assigned_to')
+                            <p class="mt-2 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                        @error('assigned_to.*')
+                            <p class="mt-2 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </div>
 
                     {{-- Status & Priority --}}

@@ -27,6 +27,13 @@ class TaskRequest extends FormRequest
 
             'assigned_to' => [
                 'required',
+                'array',
+                'min:1',
+            ],
+
+            'assigned_to.*' => [
+                'required',
+                'integer',
                 'exists:users,id',
             ],
 
@@ -36,8 +43,7 @@ class TaskRequest extends FormRequest
             ],
 
             'status' => [
-                'sometimes',
-                'required',
+                'nullable',
                 'in:todo,in_progress,completed,cancelled',
             ],
 
@@ -63,9 +69,21 @@ class TaskRequest extends FormRequest
                 'Judul task maksimal 255 karakter.',
 
             'assigned_to.required' =>
-                'User yang ditugaskan wajib dipilih.',
+                'Minimal satu user harus ditugaskan.',
 
-            'assigned_to.exists' =>
+            'assigned_to.array' =>
+                'User yang ditugaskan tidak valid.',
+
+            'assigned_to.min' =>
+                'Minimal satu user harus ditugaskan.',
+
+            'assigned_to.*.required' =>
+                'User yang ditugaskan tidak valid.',
+
+            'assigned_to.*.integer' =>
+                'User yang ditugaskan tidak valid.',
+
+            'assigned_to.*.exists' =>
                 'User yang dipilih tidak ditemukan.',
 
             'group_id.required' =>

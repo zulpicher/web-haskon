@@ -9,12 +9,11 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-
     public function index(Request $request)
     {
         $query = Task::with([
             'creator',
-            'assignee',
+            'assignees',
             'group',
         ]);
 
@@ -39,25 +38,14 @@ class TaskController extends Controller
 
         // Summary seluruh task
         $totalTasks = Task::count();
-
         $todoTasks = Task::where('status', 'todo')->count();
+        $inProgressTasks = Task::where('status', 'in_progress')->count();
+        $completedTasks = Task::where('status', 'completed')->count();
 
-        $inProgressTasks = Task::where(
-            'status',
-            'in_progress'
-        )->count();
-
-        $completedTasks = Task::where(
-            'status',
-            'completed'
-        )->count();
-
+        // Perhitungan Overdue yang presisi (H+1 dari due_date)
         $overdueTasks = Task::whereNotNull('due_date')
-            ->whereDate('due_date', '<', now()->toDateString())
-            ->whereNotIn('status', [
-                'completed',
-                'cancelled',
-            ])
+            ->whereDate('due_date', '<', today())
+            ->whereNotIn('status', ['completed', 'cancelled'])
             ->count();
 
         return view('tasks.index', compact(
@@ -87,25 +75,32 @@ class TaskController extends Controller
         $group = Group::with('users:id,name')
             ->findOrFail($validated['group_id']);
 
-        abort_unless(
-            $group->users->contains(
-                'id',
-                $validated['assigned_to']
-            ),
+        $groupUserIds = $group->users
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id);
+
+        $assignedUserIds = collect($validated['assigned_to'])
+            ->map(fn ($id) => (int) $id);
+
+        $invalidUsers = $assignedUserIds->diff($groupUserIds);
+
+        abort_if(
+            $invalidUsers->isNotEmpty(),
             422,
-            'User yang ditugaskan harus menjadi anggota group.'
+            'Semua user yang ditugaskan harus menjadi anggota group.'
         );
 
         $task = Task::create([
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
             'created_by' => $request->user()->id,
-            'assigned_to' => $validated['assigned_to'],
             'group_id' => $validated['group_id'],
             'status' => $validated['status'] ?? 'todo',
             'priority' => $validated['priority'],
             'due_date' => $validated['due_date'] ?? null,
         ]);
+
+        $task->assignees()->sync($assignedUserIds);
 
         return redirect()
             ->route('tasks.show', $task)
@@ -116,7 +111,7 @@ class TaskController extends Controller
     {
         $task->load([
             'creator',
-            'assignee',
+            'assignees',
             'group',
             'comments.user',
         ]);
@@ -126,51 +121,54 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
+        $task->load('assignees');
+
         $groups = Group::with('users')
             ->orderBy('name')
             ->get();
 
-        return view('tasks.edit', compact(
-            'task',
-            'groups'
-        ));
+        return view('tasks.edit', compact('task', 'groups'));
     }
 
-    public function update(
-        TaskRequest $request,
-        Task $task
-    ) {
+    public function update(TaskRequest $request, Task $task)
+    {
         $validated = $request->validated();
 
-        $group = Group::with('users')
+        $group = Group::with('users:id,name')
             ->findOrFail($validated['group_id']);
 
-        abort_unless(
-            $group->users->contains(
-                'id',
-                $validated['assigned_to']
-            ),
+        $groupUserIds = $group->users
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id);
+
+        $assignedUserIds = collect($validated['assigned_to'])
+            ->map(fn ($id) => (int) $id);
+
+        $invalidUsers = $assignedUserIds->diff($groupUserIds);
+
+        abort_if(
+            $invalidUsers->isNotEmpty(),
             422,
-            'User yang ditugaskan harus menjadi anggota group.'
+            'Semua user yang ditugaskan harus menjadi anggota group.'
         );
 
         $completedAt = null;
 
         if (($validated['status'] ?? null) === 'completed') {
-            $completedAt = $task->completed_at
-                ?? now();
+            $completedAt = $task->completed_at ?? now();
         }
 
         $task->update([
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
-            'assigned_to' => $validated['assigned_to'],
             'group_id' => $validated['group_id'],
             'status' => $validated['status'] ?? $task->status,
             'priority' => $validated['priority'],
             'due_date' => $validated['due_date'] ?? null,
             'completed_at' => $completedAt,
         ]);
+
+        $task->assignees()->sync($assignedUserIds);
 
         return redirect()
             ->route('tasks.show', $task)

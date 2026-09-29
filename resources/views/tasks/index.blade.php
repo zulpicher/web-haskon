@@ -618,13 +618,8 @@
                                         'urgent' => 'bg-red-50 text-red-700',
                                     ];
 
-                                    $isOverdue =
-                                        $task->due_date !== null
-                                        && $task->due_date->isPast()
-                                        && ! in_array(
-                                            $task->status,
-                                            ['completed', 'cancelled']
-                                        );
+                                    // Menggunakan method isOverdue() dari Task Model
+                                    $isOverdue = $task->isOverdue();
                                 @endphp
 
 
@@ -674,7 +669,7 @@
                                     <td class="whitespace-nowrap px-5 py-4">
 
                                         <div class="text-sm font-medium text-haskon-dark">
-                                            {{ $task->assignee->name }}
+                                            {{ $task->assignees->pluck('name')->join(', ') ?: '-' }}
                                         </div>
 
                                         <div class="text-xs text-haskon-muted">
@@ -901,13 +896,8 @@
                                 'urgent' => 'bg-red-50 text-red-700',
                             ];
 
-                            $isOverdue =
-                                $task->due_date !== null
-                                && $task->due_date->isPast()
-                                && ! in_array(
-                                    $task->status,
-                                    ['completed', 'cancelled']
-                                );
+                            // Menggunakan method isOverdue() dari Task Model
+                            $isOverdue = $task->isOverdue();
                         @endphp
 
 
@@ -951,7 +941,7 @@
                                     </p>
 
                                     <p class="mt-1 font-medium text-haskon-dark">
-                                        {{ $task->assignee->name }}
+                                        {{ $task->assignees->pluck('name')->join(', ') ?: '-' }}
                                     </p>
 
                                 </div>

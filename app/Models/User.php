@@ -42,6 +42,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Group::class, 'group_user');
     }
 
+    public function tasks(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Task::class,
+            'task_user'
+        )->withTimestamps();
+    }
+
     public function createdTasks(): HasMany
     {
         return $this->hasMany(Task::class, 'created_by');

@@ -60,7 +60,7 @@
                         ),
 
                         selectedGroup: @js(old('group_id', $task->group_id)),
-                        selectedUser: @js(old('assigned_to', $task->assigned_to)),
+                        selectedUsers: @js(old('assigned_to', $task->assignees->pluck('id')->toArray())),
 
                         get members() {
                             const group = this.groups.find(
@@ -71,13 +71,8 @@
                         },
 
                         changeGroup() {
-                            const exists = this.members.some(
-                                user => String(user.id) === String(this.selectedUser)
-                            );
-
-                            if (!exists) {
-                                this.selectedUser = '';
-                            }
+                            // Reset selected users ke array kosong jika group diganti
+                            this.selectedUsers = [];
                         }
                     }"
                     class="space-y-6"
@@ -172,63 +167,45 @@
                             @enderror
                         </div>
 
-                        {{-- Assignment --}}
+                        {{-- Multi Assignment Checkbox --}}
                         <div>
-                            <label
-                                for="assigned_to"
-                                class="block text-sm font-semibold text-haskon-dark"
-                            >
+                            <label class="block text-sm font-semibold text-haskon-dark">
                                 Ditugaskan Kepada
                             </label>
 
-                            <select
-                                id="assigned_to"
-                                name="assigned_to"
-                                x-model="selectedUser"
-                                required
-                                :disabled="!selectedGroup || members.length === 0"
-                                class="mt-2 block w-full rounded-lg border border-haskon-border bg-white px-4 py-3 text-sm text-haskon-dark shadow-sm disabled:cursor-not-allowed disabled:bg-gray-100 focus:border-haskon-accent focus:ring-haskon-accent"
-                            >
-                                <option value="">
-                                    Pilih anggota
-                                </option>
-
-                                <template
-                                    x-for="user in members"
-                                    :key="user.id"
-                                >
-                                    <option
-                                        :value="user.id"
-                                        x-text="user.name"
-                                    ></option>
+                            <div class="mt-2 max-h-48 overflow-y-auto rounded-lg border border-haskon-border bg-white p-3 space-y-2">
+                                <template x-if="!selectedGroup">
+                                    <p class="text-xs text-haskon-muted">
+                                        Pilih group terlebih dahulu.
+                                    </p>
                                 </template>
-                            </select>
 
-                            <p
-                                x-show="!selectedGroup"
-                                x-cloak
-                                class="mt-2 text-xs text-haskon-muted"
-                            >
-                                Pilih group terlebih dahulu.
-                            </p>
+                                <template x-if="selectedGroup && members.length === 0">
+                                    <p class="text-xs text-red-600">
+                                        Group ini belum memiliki anggota.
+                                    </p>
+                                </template>
 
-                            <p
-                                x-show="selectedGroup && members.length === 0"
-                                x-cloak
-                                class="mt-2 text-xs text-red-600"
-                            >
-                                Group ini belum memiliki anggota.
-                            </p>
-
-                            <p
-                                x-show="selectedGroup && members.length > 0"
-                                x-cloak
-                                class="mt-2 text-xs text-haskon-muted"
-                            >
-                                Pilih anggota yang akan bertanggung jawab atas task ini.
-                            </p>
+                                <template x-for="user in members" :key="user.id">
+                                    <label class="flex items-center gap-3 cursor-pointer py-1 text-sm text-haskon-dark hover:bg-gray-50 px-2 rounded">
+                                        <input
+                                            type="checkbox"
+                                            name="assigned_to[]"
+                                            :value="user.id"
+                                            x-model="selectedUsers"
+                                            class="rounded border-haskon-border text-haskon-dark focus:ring-haskon-accent"
+                                        >
+                                        <span x-text="user.name"></span>
+                                    </label>
+                                </template>
+                            </div>
 
                             @error('assigned_to')
+                                <p class="mt-1 text-sm text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                            @error('assigned_to.*')
                                 <p class="mt-1 text-sm text-red-600">
                                     {{ $message }}
                                 </p>
