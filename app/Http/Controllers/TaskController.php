@@ -15,6 +15,7 @@ class TaskController extends Controller
             'creator',
             'assignees',
             'group',
+            'comments.user',
         ]);
 
         if ($request->filled('status')) {
@@ -34,7 +35,7 @@ class TaskController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        $groups = Group::orderBy('name')->get();
+        $groups = Group::with('users:id,name')->orderBy('name')->get();
 
         // Summary seluruh task
         $totalTasks = Task::count();
@@ -103,7 +104,7 @@ class TaskController extends Controller
         $task->assignees()->sync($assignedUserIds);
 
         return redirect()
-            ->route('tasks.show', $task)
+            ->route('tasks.index', $task)
             ->with('success', 'Task berhasil dibuat.');
     }
 
@@ -171,7 +172,7 @@ class TaskController extends Controller
         $task->assignees()->sync($assignedUserIds);
 
         return redirect()
-            ->route('tasks.show', $task)
+            ->route('tasks.index', $task)
             ->with('success', 'Task berhasil diperbarui.');
     }
 

@@ -83,6 +83,9 @@
                     <div>
                         <label class="mb-1.5 block text-sm font-medium text-zinc-800">Deadline</label>
                         <input type="date" name="due_date" class="w-full rounded-lg border-zinc-300 focus:border-amber-400 focus:ring-amber-400">
+                        <p class="mt-2 text-xs text-haskon-muted">
+                            Kosongkan jika task tidak memiliki deadline.
+                        </p>
                     </div>
                 </div>
             </div>

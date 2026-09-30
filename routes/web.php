@@ -57,7 +57,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/reports/excel', [ReportController::class, 'excel'])
                 ->name('reports.excel');
 
-
         });
 
     /*Profile*/
@@ -70,16 +69,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     /*Modul task manajement*/    
     Route::resource('tasks', TaskController::class);
+    
     Route::post(
-        'tasks/{task}/comments',
+        '/tasks/{task}/comments',
         [TaskCommentController::class, 'store']
     )->name('tasks.comments.store');
+    
     Route::get(
-        'task-comments/{comment}/attachment',
+        '/tasks/comments/{comment}/attachment',
         [TaskCommentController::class, 'attachment']
     )->name('tasks.comments.attachment');
+    
     Route::delete(
-        'task-comments/{comment}',
+        '/tasks/comments/{comment}',
         [TaskCommentController::class, 'destroy']
     )->name('tasks.comments.destroy');
 

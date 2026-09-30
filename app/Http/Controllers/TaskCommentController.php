@@ -72,7 +72,7 @@ class TaskCommentController extends Controller
         ]);
 
         return redirect()
-            ->route('tasks.show', $task)
+            ->route('tasks.index')
             ->with('success', 'Komentar berhasil ditambahkan.');
     }
 
@@ -111,8 +111,6 @@ class TaskCommentController extends Controller
             'Anda tidak memiliki izin menghapus komentar ini.'
         );
 
-        $task = $comment->task;
-
         if ($comment->attachment_path) {
             Storage::disk('public')->delete(
                 $comment->attachment_path
@@ -122,8 +120,7 @@ class TaskCommentController extends Controller
         $comment->delete();
 
         return redirect()
-            ->route('tasks.show', $task)
+            ->route('tasks.index')
             ->with('success', 'Komentar berhasil dihapus.');
     }
-
 }

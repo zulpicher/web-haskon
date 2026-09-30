@@ -23,7 +23,13 @@
                     <input type="text" name="title" :value="task?.title" required class="w-full rounded-lg border-zinc-300 focus:border-amber-400 focus:ring-amber-400">
                 </div>
 
-                <div class="grid grid-cols-2 gap-5">
+                {{-- Deskripsi --}}
+                <div>
+                    <label class="mb-1.5 block text-sm font-medium text-zinc-800">Deskripsi</label>
+                    <textarea name="description" rows="3" class="w-full rounded-lg border-zinc-300 focus:border-amber-400 focus:ring-amber-400" x-text="task?.description"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     {{-- Group --}}
                     <div>
                         <label class="mb-1.5 block text-sm font-medium text-zinc-800">Group</label>
@@ -52,8 +58,8 @@
                     </div>
                 </div>
 
-                {{-- Status & Deadline --}}
-                <div class="grid grid-cols-2 gap-5">
+                {{-- Status, Priority, & Deadline --}}
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                     <div>
                         <label class="mb-1.5 block text-sm font-medium text-zinc-800">Status</label>
                         <select name="status" :value="task?.status" class="w-full rounded-lg border-zinc-300 focus:border-amber-400 focus:ring-amber-400">
@@ -71,6 +77,14 @@
                             <option value="high">High</option>
                             <option value="urgent">Urgent</option>
                         </select>
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-sm font-medium text-zinc-800">Deadline</label>
+                        {{-- Memotong string format ISO date agar sesuai dengan format input="date" (YYYY-MM-DD) --}}
+                        <input type="date" name="due_date" :value="task?.due_date ? task.due_date.substring(0, 10) : ''" class="w-full rounded-lg border-zinc-300 focus:border-amber-400 focus:ring-amber-400">
+                        <p class="mt-2 text-xs text-haskon-muted">
+                            Kosongkan jika task tidak memiliki deadline.
+                        </p>
                     </div>
                 </div>
             </div>
