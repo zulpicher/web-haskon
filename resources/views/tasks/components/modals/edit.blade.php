@@ -59,16 +59,7 @@
                 </div>
 
                 {{-- Status, Priority, & Deadline --}}
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                    <div>
-                        <label class="mb-1.5 block text-sm font-medium text-zinc-800">Status</label>
-                        <select name="status" :value="task?.status" class="w-full rounded-lg border-zinc-300 focus:border-amber-400 focus:ring-amber-400">
-                            <option value="todo">To Do</option>
-                            <option value="in_progress">In Progress</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label class="mb-1.5 block text-sm font-medium text-zinc-800">Prioritas</label>
                         <select name="priority" :value="task?.priority" class="w-full rounded-lg border-zinc-300 focus:border-amber-400 focus:ring-amber-400">

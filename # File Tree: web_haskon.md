@@ -1,6 +1,6 @@
 # File Tree: web_haskon
 
-**Generated:** 9/29/2026, 1:26:00 PM
+**Generated:** 10/5/2026, 8:42:23 AM
 **Root Path:** `/persistent/home/zul/Projects/web_haskon`
 
 ```
@@ -88,8 +88,10 @@
 │   ├── .gitignore
 │   └── database.sqlite
 ├── docker
-│   └── nginx
-│       └── default.conf
+│   ├── nginx
+│   │   └── default.conf
+│   ├── uploads.ini
+│   └── upload.ini
 ├── public
 │   ├── .htaccess
 │   ├── favicon.ico
@@ -160,10 +162,15 @@
 │       │   ├── index.blade.php
 │       │   └── pdf.blade.php
 │       ├── tasks
-│       │   ├── create.blade.php
-│       │   ├── edit.blade.php
-│       │   ├── index.blade.php
-│       │   └── show.blade.php
+│       │   ├── components
+│       │   │   ├── modals
+│       │   │   │   ├── add.blade.php
+│       │   │   │   ├── delete.blade.php
+│       │   │   │   ├── detail.blade.php
+│       │   │   │   └── edit.blade.php
+│       │   │   ├── summary.blade.php
+│       │   │   └── task-table.blade.php
+│       │   └── index.blade.php
 │       ├── home.blade.php
 │       └── welcome.blade.php
 ├── routes
@@ -177,7 +184,8 @@
 │   │   ├── public
 │   │   │   ├── task-comments
 │   │   │   │   ├── 8P69QPOcAbH6WjbkXoPNKM43LueFOGEPdxdf6JEb.jpg
-│   │   │   │   └── VdqEpiUm7C6qyzGADiw73BSRMBARa6O48icnrFMu.pdf
+│   │   │   │   ├── VdqEpiUm7C6qyzGADiw73BSRMBARa6O48icnrFMu.pdf
+│   │   │   │   └── b2MakB0qFCl5tZ9nZyJK80dSP3ZzLglesyT4R8y2.png
 │   │   │   └── .gitignore
 │   │   └── .gitignore
 │   ├── framework
@@ -189,7 +197,11 @@
 │   │   ├── views
 │   │   │   ├── .gitignore
 │   │   │   ├── 08753f8b4c7bcd91c76536d3821618bd.php
-│   │   │   ├── saya potong biar g kebanyakan
+│   │   │   ├── 095dfb32a4c8e6ee6128f434f66ddc77.php
+│   │   │   ├── 09a58fcacf748a6562ed927c268fc96c.php
+│   │   │   ├── 0bb498133dd2fa29f1d606ce1b6f6842.php
+│   │   │   ├── 0d84be4d950af9427ca9614eea145756.php
+│   │   │   ├── saya potong karena kebanyakan
 │   │   ├── .gitignore
 │   │   └── lsp-73727eb9e7630875.php
 │   └── logs
@@ -222,6 +234,7 @@
 ├── README.md
 ├── artisan
 ├── boost.json
+├── chat dengna AI sebelah.md
 ├── composer.json
 ├── docker-compose.yml
 ├── package-lock.json

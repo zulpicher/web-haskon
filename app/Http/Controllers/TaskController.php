@@ -29,8 +29,11 @@ class TaskController extends Controller
         if ($request->filled('group_id')) {
             $query->where('group_id', $request->group_id);
         }
-
+        // Mengurutkan berdasarkan status (yang belum selesai di atas)
+        // LALU diurutkan berdasarkan prioritas (urgent paling atas)
         $tasks = $query
+            ->orderByRaw("FIELD(status, 'in_progress', 'todo', 'completed', 'cancelled')")
+            ->orderByRaw("FIELD(priority, 'urgent', 'high', 'medium', 'low')")
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -58,15 +61,6 @@ class TaskController extends Controller
             'completedTasks',
             'overdueTasks'
         ));
-    }
-
-    public function create()
-    {
-        $groups = Group::with('users')
-            ->orderBy('name')
-            ->get();
-
-        return view('tasks.create', compact('groups'));
     }
 
     public function store(TaskRequest $request)
@@ -108,28 +102,6 @@ class TaskController extends Controller
             ->with('success', 'Task berhasil dibuat.');
     }
 
-    public function show(Task $task) 
-    {
-        $task->load([
-            'creator',
-            'assignees',
-            'group',
-            'comments.user',
-        ]);
-
-        return view('tasks.show', compact('task'));
-    }
-
-    public function edit(Task $task)
-    {
-        $task->load('assignees');
-
-        $groups = Group::with('users')
-            ->orderBy('name')
-            ->get();
-
-        return view('tasks.edit', compact('task', 'groups'));
-    }
 
     public function update(TaskRequest $request, Task $task)
     {
@@ -183,5 +155,28 @@ class TaskController extends Controller
         return redirect()
             ->route('tasks.index')
             ->with('success', 'Task berhasil dihapus.');
+    }
+
+    public function updateStatus(Request $request, Task $task)
+    {
+        // Otorisasi: Hanya Admin atau user yang ditugaskan (Assignee) yang bisa mengubah
+        abort_unless(
+            $request->user()->isAdmin() || $task->assignees->contains('id', $request->user()->id),
+            403,
+            'Anda tidak memiliki izin untuk mengubah status task ini.'
+        );
+
+        $validated = $request->validate([
+            'status' => 'required|in:todo,in_progress,completed,cancelled'
+        ]);
+
+        $completedAt = $validated['status'] === 'completed' ? now() : null;
+
+        $task->update([
+            'status' => $validated['status'],
+            'completed_at' => $completedAt,
+        ]);
+
+        return redirect()->back()->with('success', 'Status task berhasil diperbarui.');
     }
 }

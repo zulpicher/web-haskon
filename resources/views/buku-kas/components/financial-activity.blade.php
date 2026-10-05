@@ -1,232 +1,242 @@
 {{-- ================================================= --}}
-{{-- FINANCIAL ACTIVITY --}}
+{{-- FINANCIAL ACTIVITY (LINE CHART) --}}
 {{-- ================================================= --}}
 
 @php
-    $monthlyDifference = $monthlyIncome - $monthlyExpense;
+    // 1. Ambil data 10 tahun terakhir langsung dari model
+    $now = now();
+    $transactions = \App\Models\Transaction::where('created_at', '>=', $now->copy()->subYears(10))->get();
 
-    $totalMonthlyActivity = $monthlyIncome + $monthlyExpense;
+    // 2. Siapkan kerangka data kosong
+    $chartData = [
+        'monthly' => ['labels' => [], 'income' => [], 'expense' => []],
+        'yearly' => ['labels' => [], 'income' => [], 'expense' => []],
+        'five_years' => ['labels' => [], 'income' => [], 'expense' => []],
+        'ten_years' => ['labels' => [], 'income' => [], 'expense' => []],
+    ];
 
-    $incomePercentage = $totalMonthlyActivity > 0
-        ? ($monthlyIncome / $totalMonthlyActivity) * 100
-        : 0;
+    // --- Setup Bulan Ini (Tanggal 1 s/d Akhir Bulan) ---
+    for ($i = 1; $i <= $now->daysInMonth; $i++) {
+        $chartData['monthly']['labels'][] = (string)$i;
+        $chartData['monthly']['income'][$i] = 0;
+        $chartData['monthly']['expense'][$i] = 0;
+    }
 
-    $expensePercentage = $totalMonthlyActivity > 0
-        ? ($monthlyExpense / $totalMonthlyActivity) * 100
-        : 0;
+    // --- Setup Tahun Ini (Januari - Desember) ---
+    $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    foreach ($months as $k => $m) {
+        $chartData['yearly']['labels'][] = $m;
+        $chartData['yearly']['income'][$k+1] = 0;
+        $chartData['yearly']['expense'][$k+1] = 0;
+    }
+
+    // --- Setup 5 Tahun Terakhir ---
+    for ($i = 4; $i >= 0; $i--) {
+        $year = $now->year - $i;
+        $chartData['five_years']['labels'][] = (string)$year;
+        $chartData['five_years']['income'][$year] = 0;
+        $chartData['five_years']['expense'][$year] = 0;
+    }
+
+    // --- Setup 10 Tahun Terakhir ---
+    for ($i = 9; $i >= 0; $i--) {
+        $year = $now->year - $i;
+        $chartData['ten_years']['labels'][] = (string)$year;
+        $chartData['ten_years']['income'][$year] = 0;
+        $chartData['ten_years']['expense'][$year] = 0;
+    }
+
+    // 3. Kelompokkan Data ke dalam Masing-Masing Kategori
+    foreach ($transactions as $t) {
+        
+        // SESUAIKAN NAMA KOLOM JIKA BERBEDA DI DATABASEMU: 
+        // Diasumsikan 'amount' untuk nominal, 'type' untuk tipe pemasukan/pengeluaran
+        $amount = (float) $t->amount;
+        $isIncome = in_array(strtolower($t->type), ['income', 'pemasukan', 'in']);
+
+        $d = $t->created_at;
+
+        // Masuk ke Bulan Ini
+        if ($d->month === $now->month && $d->year === $now->year) {
+            if ($isIncome) $chartData['monthly']['income'][$d->day] += $amount;
+            else $chartData['monthly']['expense'][$d->day] += $amount;
+        }
+
+        // Masuk ke Tahun Ini
+        if ($d->year === $now->year) {
+            if ($isIncome) $chartData['yearly']['income'][$d->month] += $amount;
+            else $chartData['yearly']['expense'][$d->month] += $amount;
+        }
+
+        // Masuk ke 5 Tahun Terakhir
+        if ($d->year >= $now->year - 4) {
+            if ($isIncome) $chartData['five_years']['income'][$d->year] += $amount;
+            else $chartData['five_years']['expense'][$d->year] += $amount;
+        }
+
+        // Masuk ke 10 Tahun Terakhir
+        if ($d->year >= $now->year - 9) {
+            if ($isIncome) $chartData['ten_years']['income'][$d->year] += $amount;
+            else $chartData['ten_years']['expense'][$d->year] += $amount;
+        }
+    }
+
+    // 4. Bersihkan Array agar index-nya berurutan untuk JavaScript
+    foreach (['monthly', 'yearly', 'five_years', 'ten_years'] as $period) {
+        $chartData[$period]['income'] = array_values($chartData[$period]['income']);
+        $chartData[$period]['expense'] = array_values($chartData[$period]['expense']);
+    }
 @endphp
 
-<div class="haskon-card bg-white border border-zinc-200 overflow-hidden">
+{{-- Load Chart.js CDN (Hanya akan dipanggil satu kali) --}}
+@once
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@endonce
 
-    {{-- Header --}}
-    <div class="border-b border-zinc-200 bg-white px-5 py-4">
+<div x-data="financialLineChart(@js($chartData))" class="haskon-card bg-white border border-zinc-200 overflow-hidden">
+    
+    {{-- Header & Dropdown Filter --}}
+    <div class="border-b border-zinc-200 bg-white px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-lg bg-zinc-900 text-white flex items-center justify-center shadow-xs flex-shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
                 </svg>
             </div>
             <div>
-                <h3 class="text-base font-bold text-zinc-900 tracking-tight">
-                    Aktivitas Keuangan
-                </h3>
-                <p class="text-xs text-zinc-500">
-                    Rasio pemasukan vs pengeluaran bulan ini
-                </p>
+                <h3 class="text-base font-bold text-zinc-900 tracking-tight">Tren Keuangan</h3>
+                <p class="text-xs text-zinc-500">Perbandingan arus kas masuk dan keluar</p>
             </div>
         </div>
+
+        {{-- Dropdown Pengubah Sumbu X --}}
+        <select 
+            x-model="period" 
+            @change="updateChart()" 
+            class="rounded-lg border-zinc-300 text-sm font-medium text-zinc-700 focus:border-amber-400 focus:ring-amber-400 cursor-pointer shadow-sm"
+        >
+            <option value="monthly">Bulan Ini (Harian)</option>
+            <option value="yearly">Tahun Ini (Bulanan)</option>
+            <option value="five_years">5 Tahun Terakhir</option>
+            <option value="ten_years">10 Tahun Terakhir</option>
+        </select>
     </div>
 
-
-    {{-- Content --}}
+    {{-- Area Canvas --}}
     <div class="p-5">
-
-        {{-- Donut Chart --}}
-        <div class="flex justify-center">
-
-            <div class="relative h-52 w-52">
-
-                @if ($totalMonthlyActivity > 0)
-
-                    <div
-                        class="absolute inset-0 rounded-full shadow-xs"
-                        style="
-                            background: conic-gradient(
-                                #16a34a 0% {{ $incomePercentage }}%,
-                                #e11d48 {{ $incomePercentage }}% 100%
-                            );
-                        "
-                    ></div>
-
-                    {{-- Donut Hole --}}
-                    <div
-                        class="
-                            absolute
-                            inset-7
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            rounded-full
-                            bg-zinc-50
-                            border
-                            border-zinc-200
-                            text-center
-                            shadow-inner
-                        "
-                    >
-                        <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                            Total Arus
-                        </span>
-
-                        <span class="mt-0.5 text-base font-black text-zinc-900">
-                            Rp{{ number_format($totalMonthlyActivity, 0, ',', '.') }}
-                        </span>
-                    </div>
-
-                @else
-
-                    {{-- Empty Chart --}}
-                    <div
-                        class="
-                            absolute
-                            inset-0
-                            rounded-full
-                            border-[18px]
-                            border-zinc-100
-                        "
-                    ></div>
-
-                    <div
-                        class="
-                            absolute
-                            inset-7
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            rounded-full
-                            bg-zinc-50
-                            border
-                            border-zinc-200
-                            text-center
-                        "
-                    >
-                        <span class="text-xs font-medium text-zinc-400">
-                            Belum ada
-                        </span>
-
-                        <span class="mt-0.5 text-sm font-bold text-zinc-700">
-                            Aktivitas
-                        </span>
-                    </div>
-
-                @endif
-
-            </div>
-
+        <div class="relative w-full h-[320px]">
+            <canvas id="financialChartCanvas"></canvas>
         </div>
-
-
-        {{-- Legend --}}
-        <div class="mt-6 space-y-3">
-
-            {{-- Pemasukan --}}
-            <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-50 border border-zinc-100">
-
-                <div class="flex items-center gap-2.5">
-
-                    <span
-                        class="
-                            h-3 w-3
-                            flex-shrink-0
-                            rounded-full
-                            bg-emerald-600
-                        "
-                    ></span>
-
-                    <div>
-                        <p class="text-xs font-bold text-zinc-800">
-                            Pemasukan
-                        </p>
-
-                        <p class="text-[11px] text-zinc-400">
-                            {{ number_format($incomePercentage, 1, ',', '.') }}%
-                        </p>
-                    </div>
-
-                </div>
-
-                <span class="text-xs font-bold text-emerald-700">
-                    Rp{{ number_format($monthlyIncome, 0, ',', '.') }}
-                </span>
-
-            </div>
-
-
-            {{-- Pengeluaran --}}
-            <div class="flex items-center justify-between p-2.5 rounded-lg bg-zinc-50 border border-zinc-100">
-
-                <div class="flex items-center gap-2.5">
-
-                    <span
-                        class="
-                            h-3 w-3
-                            flex-shrink-0
-                            rounded-full
-                            bg-rose-600
-                        "
-                    ></span>
-
-                    <div>
-                        <p class="text-xs font-bold text-zinc-800">
-                            Pengeluaran
-                        </p>
-
-                        <p class="text-[11px] text-zinc-400">
-                            {{ number_format($expensePercentage, 1, ',', '.') }}%
-                        </p>
-                    </div>
-
-                </div>
-
-                <span class="text-xs font-bold text-rose-700">
-                    Rp{{ number_format($monthlyExpense, 0, ',', '.') }}
-                </span>
-
-            </div>
-
-        </div>
-
-
-        {{-- Selisih --}}
-        <div class="mt-5 border-t border-zinc-200 pt-4">
-
-            <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-200/80">
-
-                <span class="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                    Selisih Kas
-                </span>
-
-                <span
-                    class="
-                        text-sm
-                        font-black
-                        {{ $monthlyDifference >= 0
-                            ? 'text-emerald-700'
-                            : 'text-rose-700'
-                        }}
-                    "
-                >
-                    {{ $monthlyDifference >= 0 ? '+' : '-' }}
-                    Rp{{ number_format(abs($monthlyDifference), 0, ',', '.') }}
-                </span>
-
-            </div>
-
-        </div>
-
     </div>
-
 </div>
+
+{{-- Logika Alpine & Chart.js --}}
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('financialLineChart', (chartData) => ({
+            period: 'monthly',
+            data: chartData,
+            chartInstance: null,
+
+            init() {
+                const ctx = document.getElementById('financialChartCanvas').getContext('2d');
+                this.chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: this.getChartConfig(),
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    boxWidth: 8,
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(24, 24, 27, 0.9)', 
+                                padding: 12,
+                                cornerRadius: 8,
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) { label += ': '; }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('id-ID', {
+                                                style: 'currency',
+                                                currency: 'IDR',
+                                                minimumFractionDigits: 0
+                                            }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                border: { dash: [4, 4] },
+                                grid: { color: '#f4f4f5' }, 
+                                ticks: {
+                                    callback: function(value) {
+                                        // Mengubah format panjang (Rp1.000.000) menjadi singkat (1 jt)
+                                        return new Intl.NumberFormat('id-ID', {
+                                            notation: "compact",
+                                            compactDisplay: "short"
+                                        }).format(value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+
+            updateChart() {
+                this.chartInstance.data = this.getChartConfig();
+                this.chartInstance.update();
+            },
+
+            getChartConfig() {
+                const currentData = this.data[this.period];
+                return {
+                    labels: currentData.labels,
+                    datasets: [
+                        {
+                            label: 'Pemasukan',
+                            data: currentData.income,
+                            borderColor: '#16a34a',
+                            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        },
+                        {
+                            label: 'Pengeluaran',
+                            data: currentData.expense,
+                            borderColor: '#e11d48',
+                            backgroundColor: 'rgba(225, 29, 72, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                };
+            }
+        }));
+    });
+</script>

@@ -68,10 +68,23 @@
                 <div class="space-y-3 mb-5 max-h-48 overflow-y-auto pr-2">
                     <template x-if="task?.comments && task.comments.length > 0">
                         <template x-for="comment in task.comments" :key="comment.id">
-                            <div class="bg-zinc-50 rounded-xl p-3.5 border border-zinc-100">
-                                <div class="flex justify-between items-center mb-1.5">
-                                    <span class="text-xs font-bold text-zinc-900" x-text="comment.user?.name"></span>
-                                    <span class="text-[10px] font-medium text-zinc-400" x-text="new Date(comment.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'})"></span>
+                            <div class="bg-zinc-50 rounded-xl p-3.5 border border-zinc-100 relative group">
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <div class="flex flex-col">
+                                        <span class="text-xs font-bold text-zinc-900" x-text="comment.user?.name"></span>
+                                        <span class="text-[10px] font-medium text-zinc-400" x-text="new Date(comment.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'})"></span>
+                                    </div>
+                                    
+                                    {{-- Tombol Hapus: Hanya muncul jika user login adalah pembuat komentar ATAU seorang admin --}}
+                                    <template x-if="comment.user_id === {{ auth()->id() }} || {{ auth()->user()->isAdmin() ? 'true' : 'false' }}">
+                                        <form method="POST" :action="`/tasks/comments/${comment.id}`" onsubmit="return confirm('Yakin ingin menghapus komentar ini? Data yang dihapus tidak dapat dikembalikan.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="p-1.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors opacity-0 group-hover:opacity-100" title="Hapus Komentar">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </form>
+                                    </template>
                                 </div>
                                 <p class="text-sm text-zinc-700 whitespace-pre-line" x-text="comment.comment"></p>
                                 
@@ -85,7 +98,7 @@
                                             </div>
                                         </template>
 
-                                        {{-- Tombol Download Elegan (Tampil untuk semua tipe file) menggunakan URL yang benar --}}
+                                        {{-- Tombol Download Elegan --}}
                                         <a :href="`/tasks/comments/${comment.id}/attachment`" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-600 hover:text-amber-700 bg-amber-50 px-2.5 py-1.5 rounded-md border border-amber-100 w-fit transition-colors">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                             <span x-text="comment.attachment_name"></span>

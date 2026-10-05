@@ -69,4 +69,16 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+    
+    public function isFinance(): bool
+    {
+        return $this->groups()
+            ->where('name', 'Finance')
+            ->exists();
+    }
+
+    public function canAccessBukuKas(): bool
+    {
+        return $this->isAdmin() || $this->isFinance();
+    }
 }

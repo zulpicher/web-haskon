@@ -18,19 +18,12 @@ Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-
         Route::resource('groups', GroupController::class)
             ->except(['show']);
-
-        Route::post(
-            'groups/{group}/members',
-            [GroupController::class, 'addMember']
-        )->name('groups.members.add');
-
-        Route::delete(
-            'groups/{group}/members/{user}',
-            [GroupController::class, 'removeMember']
-        )->name('groups.members.remove');
+        Route::post('groups/{group}/members', [GroupController::class, 'addMember'])
+            ->name('groups.members.add');
+        Route::delete('groups/{group}/members/{user}', [GroupController::class, 'removeMember'])
+            ->name('groups.members.remove');
     });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -39,11 +32,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'index'])
         ->name('dashboard');
 
-    /*Modul Buku Kas*/
-    Route::prefix('buku-kas')
+    /*Modul Buku Kas - DILINDUNGI MIDDLEWARE 'buku-kas'*/
+    Route::middleware(['buku-kas'])
+        ->prefix('buku-kas')
         ->name('buku-kas.')
         ->group(function () {
-
             Route::get('/', [BukuKasController::class, 'index'])
                 ->name('dashboard');
             Route::resource('transactions', TransactionController::class)
@@ -56,34 +49,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->name('reports.pdf');
             Route::get('/reports/excel', [ReportController::class, 'excel'])
                 ->name('reports.excel');
-
         });
 
     /*Profile*/
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     /*Modul task manajement*/    
     Route::resource('tasks', TaskController::class);
-    
-    Route::post(
-        '/tasks/{task}/comments',
-        [TaskCommentController::class, 'store']
-    )->name('tasks.comments.store');
-    
-    Route::get(
-        '/tasks/comments/{comment}/attachment',
-        [TaskCommentController::class, 'attachment']
-    )->name('tasks.comments.attachment');
-    
-    Route::delete(
-        '/tasks/comments/{comment}',
-        [TaskCommentController::class, 'destroy']
-    )->name('tasks.comments.destroy');
+    Route::post('/tasks/{task}/comments', [TaskCommentController::class, 'store'])->name('tasks.comments.store');
+    Route::get('/tasks/comments/{comment}/attachment', [TaskCommentController::class, 'attachment'])->name('tasks.comments.attachment');
+    Route::delete('/tasks/comments/{comment}', [TaskCommentController::class, 'destroy'])->name('tasks.comments.destroy');
+    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status.update');
 
 });
 
