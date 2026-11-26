@@ -439,6 +439,11 @@ http://localhost:8000
 ```
 
 Jika menggunakan komputer lain, gunakan alamat IP komputer yang menjalankan Docker sesuai konfigurasi jaringan.
+Dan buka ini kalau mau manajement admin :
+
+```text
+http://localhost:8000/admin/groups
+```
 
 ---
 
